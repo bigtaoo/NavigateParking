@@ -1,46 +1,33 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef PARKMAPWINDOW_H
+#define PARKMAPWINDOW_H
 
 #include <QtGui>
-#include <QPushButton>
-#include "mapinfo.h"
+#include "parkmapgridinfo.h"
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
-
-class MainWindow : public QWindow
+class ParkMapWindow : public QWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWindow *parent = nullptr);
-
-    virtual void render();
+    ParkMapWindow(QWindow *parent = nullptr);
 
 protected:
+    void render();
     bool event(QEvent *event) override;
-
     void resizeEvent(QResizeEvent *event) override;
     void exposeEvent(QExposeEvent *event) override;
 
 private:
-    void createButtons();
     void renderMap(QPainter* painter);
     void mousePressEvent(QMouseEvent *) override;
     void mouseMoveEvent(QMouseEvent *) override;
 
-private slots:
-    void handleButton();
-
 private:
-    Ui::MainWindow *ui;
     QBackingStore *m_backingStore;
-    QPushButton *m_WallButton;
 
-    MapInfo* m_MapInfo;
+    ParkMapGridInfo* m_MapInfo;
     int m_TouchBeginTime;
     int m_TouchBeginX;
     int m_TouchBeginY;
 };
-#endif // MAINWINDOW_H
+#endif // PARKMAPWINDOW_H

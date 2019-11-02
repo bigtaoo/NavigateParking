@@ -1,22 +1,17 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include <QTime>
+#include "parkmapwindow.h"
 
-MainWindow::MainWindow(QWindow *parent)
+ParkMapWindow::ParkMapWindow(QWindow *parent)
     : QWindow(parent)
-    , ui(new Ui::MainWindow)
     , m_backingStore(new QBackingStore(this))
-    , m_MapInfo(new MapInfo)
+    , m_MapInfo(new ParkMapGridInfo)
     , m_TouchBeginTime(0)
     , m_TouchBeginX(0)
     , m_TouchBeginY(0)
 {
     setGeometry(100, 100, 5000, 5000);
-
-    createButtons();
 }
 
-void MainWindow::render()
+void ParkMapWindow::render()
 {
     QRect rect(0, 0, width(), height());
     m_backingStore->beginPaint(rect);
@@ -24,7 +19,7 @@ void MainWindow::render()
     QPaintDevice *device = m_backingStore->paintDevice();
     QPainter painter(device);
 
-    painter.fillRect(0, 0, width(), height(), QGradient::NightFade);
+    painter.fillRect(0, 0, width(), height(), QGradient::SpringWarmth);
     renderMap(&painter);
     painter.end();
 
@@ -32,9 +27,9 @@ void MainWindow::render()
     m_backingStore->flush(rect);
 }
 
-void MainWindow::renderMap(QPainter *p)
+void ParkMapWindow::renderMap(QPainter *p)
 {
-    p->setRenderHint(QPainter::Antialiasing);
+    //p->setRenderHint(QPainter::Antialiasing);
 
     p->translate(m_MapInfo->GetOffsetX(), m_MapInfo->GetOffsetY());
 
@@ -113,18 +108,18 @@ void MainWindow::renderMap(QPainter *p)
     p->restore();
 }
 
-void MainWindow::resizeEvent(QResizeEvent *resizeEvent)
+void ParkMapWindow::resizeEvent(QResizeEvent *resizeEvent)
 {
     m_backingStore->resize(resizeEvent->size());
 }
 
-void MainWindow::exposeEvent(QExposeEvent *)
+void ParkMapWindow::exposeEvent(QExposeEvent *)
 {
     if (isExposed())
         render();
 }
 
-bool MainWindow::event(QEvent *event)
+bool ParkMapWindow::event(QEvent *event)
 {
     if (event->type() == QEvent::MouseButtonRelease) {
         m_TouchBeginTime = 0;
@@ -132,16 +127,42 @@ bool MainWindow::event(QEvent *event)
     }
     else if(event->type() == QEvent::TouchBegin)
     {
-        int a = 0;
+        m_TouchBeginTime = QTime::currentTime().msec();
+
+        m_TouchBeginX = static_cast<int>(dynamic_cast<QTouchEvent*>(event)->touchPoints()[0].pos().x());
+        m_TouchBeginY = static_cast<int>(dynamic_cast<QTouchEvent*>(event)->touchPoints()[0].pos().y());
+        return true;
     }
-    else if(event->type() == QEvent::TouchEnd)
+    else if(event->type() == QEvent::TouchEnd || event->type() == QEvent::TouchCancel)
     {
-        int a = 0;
+        m_TouchBeginTime = 0;
+        return true;
+    }
+    else if(event->type() == QEvent::TouchUpdate)
+    {
+        if(m_TouchBeginTime == 0)
+        {
+            return true;
+        }
+        int curX = static_cast<int>(dynamic_cast<QTouchEvent*>(event)->touchPoints()[0].pos().x());
+        int curY = static_cast<int>(dynamic_cast<QTouchEvent*>(event)->touchPoints()[0].pos().y());
+        int deltaX = curX - m_TouchBeginX;
+        int deltaY = curY - m_TouchBeginY;
+        m_TouchBeginX = curX;
+        m_TouchBeginY = curY;
+
+        m_MapInfo->SetOffsetX(deltaX);
+        m_MapInfo->SetOffsetY(deltaY);
+
+        static int renderCount = 0;
+        ++renderCount;
+        if (renderCount % 5 == 0)
+        render();
     }
     return QWindow::event(event);
 }
 
-void MainWindow::mousePressEvent(QMouseEvent *event)
+void ParkMapWindow::mousePressEvent(QMouseEvent *event)
 {
     m_TouchBeginTime = QTime::currentTime().msec();
 
@@ -149,34 +170,23 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
     m_TouchBeginY = event->y();
 }
 
-void MainWindow::mouseMoveEvent(QMouseEvent *event)
+void ParkMapWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if(m_TouchBeginTime == 0)
     {
         return;
     }
-    int deltaX = event->pos().x() - m_TouchBeginX;
-    int deltaY = event->pos().y() - m_TouchBeginY;
+    int curX = event->pos().x();
+    int curY = event->pos().y();
+    int deltaX = curX - m_TouchBeginX;
+    int deltaY = curY - m_TouchBeginY;
+    m_TouchBeginX = curX;
+    m_TouchBeginY = curY;
 
-    m_MapInfo->SetOffsetX(deltaX / 10);
-    m_MapInfo->SetOffsetY(deltaY / 10);
+    m_MapInfo->SetOffsetX(deltaX);
+    m_MapInfo->SetOffsetY(deltaY);
 
     render();
 }
 
-void MainWindow::createButtons()
-{
-    m_WallButton = new QPushButton("My Button");
-    m_WallButton->setGeometry(QRect(QPoint(100, 100),QSize(200, 50)));
 
-    // Connect button signal to appropriate slot
-    connect(m_WallButton, SIGNAL (released()), this, SLOT (handleButton()));
-}
-
-void MainWindow::handleButton()
-{
-   // change the text
-   m_WallButton->setText("Example");
-   // resize button
-   m_WallButton->resize(100,100);
-}
