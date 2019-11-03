@@ -3,7 +3,7 @@
 
 static const int MAP_WIDTH = 1000;
 static const int MAP_HEIGHT = 1000;
-static const int GRID_SIZE = 2;
+static const int GRID_SIZE = 10;
 
 enum MapGrid
 {
@@ -44,6 +44,7 @@ private:
     void buildCenterHorizontal();
     void buildTopAndBottom();
     void buildVerticalRoad();
+    void buildParkingPosition();
 
 private:
     // map offset for drawing

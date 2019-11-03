@@ -1,4 +1,5 @@
 #include "parkmapgridinfo.h"
+#include "parkingpositioninfo.h"
 
 ParkMapGridInfo::ParkMapGridInfo()
 {
@@ -22,6 +23,7 @@ ParkMapGridInfo::ParkMapGridInfo()
     buildCenterHorizontal();
     buildTopAndBottom();
     buildVerticalRoad();
+    buildParkingPosition();
 }
 
 ParkMapGridInfo::~ParkMapGridInfo()
@@ -278,6 +280,116 @@ void ParkMapGridInfo::buildVerticalRoad()
         {
             int index = (500 + j) * MAP_WIDTH + i;
             map[index] = MapGrid::MG_Road_Right;
+        }
+    }
+}
+
+void ParkMapGridInfo::buildParkingPosition()
+{
+    // near wall parking position
+    for(int i = 1; i < MAP_HEIGHT - 1;)
+    {
+        if(i == 1 || i == 995)
+        {
+            ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
+                                                           ,ParkingPositionDirection::PPD_Horizontal
+                                                           ,i * MAP_WIDTH + 1,5,4);
+            i += 4;
+        }
+        else
+        {
+            ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
+                                                           ,ParkingPositionDirection::PPD_Horizontal
+                                                           ,i * MAP_WIDTH + 1,5,3);
+            i += 3;
+        }
+    }
+    for(int i = 12; i < MAP_WIDTH - 12;)
+    {
+        if(i == 12)
+        {
+            ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
+                                                           ,ParkingPositionDirection::PPD_Vertical
+                                                           ,i + MAP_WIDTH,5,4);
+            i += 4;
+        }
+        else
+        {
+            ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
+                                                           ,ParkingPositionDirection::PPD_Vertical
+                                                           ,i + MAP_WIDTH,5,3);
+            i += 3;
+        }
+    }
+    for(int i = 1; i < MAP_HEIGHT - 1;)
+    {
+        if(i == 1 || i == 995)
+        {
+            ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
+                                                           ,ParkingPositionDirection::PPD_Horizontal
+                                                           ,i * MAP_WIDTH + MAP_WIDTH - 5,5,4);
+            i += 4;
+        }
+        else
+        {
+            ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
+                                                           ,ParkingPositionDirection::PPD_Horizontal
+                                                           ,i * MAP_WIDTH + MAP_WIDTH - 5,5,3);
+            i += 3;
+        }
+    }
+    for(int i = 12; i < MAP_WIDTH - 12;)
+    {
+        if(i == 12)
+        {
+            ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
+                                                           ,ParkingPositionDirection::PPD_Vertical
+                                                           ,i + MAP_WIDTH * (MAP_HEIGHT - 5),5,4);
+            i += 4;
+        }
+        else
+        {
+            ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
+                                                           ,ParkingPositionDirection::PPD_Vertical
+                                                           ,i + MAP_WIDTH * (MAP_HEIGHT - 5),5,3);
+            i += 3;
+        }
+    }
+
+    // middle
+    int iCount = 0;
+    for(int i = 12; i < MAP_WIDTH - 12; ++i)
+    {
+        for(int j = 12; j < MAP_HEIGHT - 12; ++j)
+        {
+            int index = j * MAP_WIDTH + i;
+            if(map[index] != MapGrid::MG_ParkPosition)
+            {
+                continue;
+            }
+            ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
+                                                           ,ParkingPositionDirection::PPD_Horizontal
+                                                           ,index,5,3);
+            j += 2;
+        }
+        ++iCount;
+        if(iCount % 2 == 0)
+        {
+            i += 10;
+        }
+        else
+        {
+            i += 4;
+        }
+        // center
+        if(i == 480 || i == 492 || i == 498)
+        {
+            i += 1;
+        }
+        if(i == 510)
+        {
+            i = 514;
+            iCount = 0;
         }
     }
 }

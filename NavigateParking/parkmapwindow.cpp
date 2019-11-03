@@ -1,4 +1,5 @@
 #include "parkmapwindow.h"
+#include "parkingpositioninfo.h"
 
 ParkMapWindow::ParkMapWindow(QWindow *parent)
     : QWindow(parent)
@@ -35,10 +36,16 @@ void ParkMapWindow::renderMap(QPainter *p)
 
     // draw grid
     for(int i = 0; i < MAP_WIDTH; ++i){
-        p->drawLine(0, i * GRID_SIZE, GRID_SIZE * MAP_WIDTH, i * GRID_SIZE);
+        if(needDraw(0, i * GRID_SIZE))
+        {
+            p->drawLine(0, i * GRID_SIZE, GRID_SIZE * MAP_WIDTH, i * GRID_SIZE);
+        }
     }
     for(int i = 0; i < MAP_HEIGHT; ++i){
-        p->drawLine(i * GRID_SIZE, 0, i * GRID_SIZE, GRID_SIZE * MAP_WIDTH);
+        if(needDraw(i * GRID_SIZE, 0))
+        {
+            p->drawLine(i * GRID_SIZE, 0, i * GRID_SIZE, GRID_SIZE * MAP_WIDTH);
+        }
     }
     // draw wall
     p->setPen(Qt::NoPen);
@@ -48,7 +55,10 @@ void ParkMapWindow::renderMap(QPainter *p)
         if(m_MapInfo->GetGrid(i) == MG_Wall){
             int y = i / MAP_WIDTH;
             int x = i % MAP_WIDTH;
-            p->drawRect(x * GRID_SIZE, y * GRID_SIZE, x * GRID_SIZE + GRID_SIZE, y * GRID_SIZE + GRID_SIZE);
+            if(needDraw(x * GRID_SIZE, y * GRID_SIZE))
+            {
+                p->drawRect(x * GRID_SIZE, y * GRID_SIZE, x * GRID_SIZE + GRID_SIZE, y * GRID_SIZE + GRID_SIZE);
+            }
         }
     }
     p->restore();
@@ -61,7 +71,10 @@ void ParkMapWindow::renderMap(QPainter *p)
         if(m_MapInfo->GetGrid(i) == MG_Road_Left){
             int y = i / MAP_WIDTH;
             int x = i % MAP_WIDTH;
-            p->drawRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            if(needDraw(x * GRID_SIZE, y * GRID_SIZE))
+            {
+                p->drawRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            }
         }
     }
     p->restore();
@@ -73,7 +86,10 @@ void ParkMapWindow::renderMap(QPainter *p)
         if(m_MapInfo->GetGrid(i) == MG_Road_Right){
             int y = i / MAP_WIDTH;
             int x = i % MAP_WIDTH;
-            p->drawRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            if(needDraw(x * GRID_SIZE, y * GRID_SIZE))
+            {
+                p->drawRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            }
         }
     }
     p->restore();
@@ -86,7 +102,10 @@ void ParkMapWindow::renderMap(QPainter *p)
         if(m_MapInfo->GetGrid(i) == MG_ParkPosition){
             int y = i / MAP_WIDTH;
             int x = i % MAP_WIDTH;
-            p->drawRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            if(needDraw(x * GRID_SIZE, y * GRID_SIZE))
+            {
+                p->drawRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            }
         }
     }
     p->restore();
@@ -97,12 +116,44 @@ void ParkMapWindow::renderMap(QPainter *p)
     p->save();
     for(int i = 0; i < MAP_WIDTH; ++i){
         if(i % 50 == 0){
-            p->drawText(0, i * GRID_SIZE, QString::number(i));
+            if(needDraw(i * GRID_SIZE, GRID_SIZE))
+            {
+                p->drawText(i * GRID_SIZE, GRID_SIZE, QString::number(i));
+            }
         }
     }
     for(int i = 0; i < MAP_HEIGHT; ++i){
         if(i % 50 == 0){
-            p->drawText(i * GRID_SIZE, GRID_SIZE, QString::number(i));
+            if(needDraw(0, i * GRID_SIZE + GRID_SIZE))
+            {
+                p->drawText(0,i * GRID_SIZE + GRID_SIZE,  QString::number(i));
+            }
+        }
+    }
+    p->restore();
+
+    renderParkingIndex(p);
+}
+
+void ParkMapWindow::renderParkingIndex(QPainter* p)
+{
+    p->setPen(QColor(255, 0, 0));
+    QFont font = p->font();
+    font.setPointSize(10);
+    p->setFont(font);
+    p->setBrush(QColor(255, 182, 193));
+    p->save();
+
+    const QVector<QSharedPointer<ParkingPositionInfo>>& all = ParkingPositions::GetIns()->GetAllPositions();
+    foreach (const QSharedPointer<ParkingPositionInfo> iter, all)
+    {
+        int index = iter.get()->GetGridIndex();
+        int x = index % MAP_WIDTH;
+        int y = index / MAP_WIDTH;
+
+        if(needDraw(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE))
+        {
+            p->drawText(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE, QString::number(iter.get()->GetIndex()));
         }
     }
     p->restore();
@@ -154,10 +205,17 @@ bool ParkMapWindow::event(QEvent *event)
         m_MapInfo->SetOffsetX(deltaX);
         m_MapInfo->SetOffsetY(deltaY);
 
-        static int renderCount = 0;
-        ++renderCount;
-        if (renderCount % 5 == 0)
-        render();
+        static int renderTime = QTime::currentTime().msec();
+        int curTime = QTime::currentTime().msec();
+        if(curTime - renderTime > 30)
+        {
+            renderTime += 30;
+            if(curTime - renderTime > 30)
+            {
+                renderTime = curTime;
+            }
+            render();
+        }
     }
     return QWindow::event(event);
 }
@@ -189,4 +247,14 @@ void ParkMapWindow::mouseMoveEvent(QMouseEvent *event)
     render();
 }
 
-
+bool ParkMapWindow::needDraw(int x, int y)
+{
+    int adjustX = x + m_MapInfo->GetOffsetX();
+    int adjustY = y + m_MapInfo->GetOffsetY();
+    if(adjustX > -GRID_SIZE * 2 && adjustX < width() + GRID_SIZE * 2
+            && adjustY > -GRID_SIZE * 2 && adjustY < height() + GRID_SIZE * 2)
+    {
+        return true;
+    }
+    return false;
+}

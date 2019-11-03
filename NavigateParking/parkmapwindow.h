@@ -19,6 +19,8 @@ protected:
 
 private:
     void renderMap(QPainter* painter);
+    void renderParkingIndex(QPainter* painter);
+    bool needDraw(int x, int y);
     void mousePressEvent(QMouseEvent *) override;
     void mouseMoveEvent(QMouseEvent *) override;
 

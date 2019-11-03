@@ -17,10 +17,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
+    parkingpositioninfo.cpp \
     parkmapgridinfo.cpp \
     parkmapwindow.cpp
 
 HEADERS += \
+    parkingpositioninfo.h \
     parkmapgridinfo.h \
     parkmapwindow.h
 
