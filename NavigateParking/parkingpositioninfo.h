@@ -13,7 +13,7 @@ enum ParkingPositionDirection
 class ParkingPositionInfo
 {
 public:
-    ParkingPositionInfo() = default;
+    ParkingPositionInfo() = delete;
     explicit ParkingPositionInfo(int index, ParkingPositionDirection direction, int gridIndex, int length, int width);
     ~ParkingPositionInfo();
 
@@ -21,6 +21,8 @@ public:
     inline int GetGridIndex() const { return m_GridIndex; }
     inline ParkingPositionDirection GetDirection() const { return m_Direction; }
     inline bool IsUsed() const { return m_IsUsed; }
+    inline void Use() { m_IsUsed = true; }
+    inline void Unuse() { m_IsUsed = false; }
 
 private:
     int m_ParkingIndex;

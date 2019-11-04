@@ -2,7 +2,6 @@
 #define PARKMAPWINDOW_H
 
 #include <QtGui>
-#include "parkmapgridinfo.h"
 
 class ParkMapWindow : public QWindow
 {
@@ -20,6 +19,8 @@ protected:
 private:
     void renderMap(QPainter* painter);
     void renderParkingIndex(QPainter* painter);
+    void renderParkingUseInfo(QPainter* painter);
+    void renderPath(QPainter* painter);
     bool needDraw(int x, int y);
     void mousePressEvent(QMouseEvent *) override;
     void mouseMoveEvent(QMouseEvent *) override;
@@ -27,7 +28,6 @@ private:
 private:
     QBackingStore *m_backingStore;
 
-    ParkMapGridInfo* m_MapInfo;
     int m_TouchBeginTime;
     int m_TouchBeginX;
     int m_TouchBeginY;

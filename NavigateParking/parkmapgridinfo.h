@@ -1,9 +1,11 @@
 #ifndef PARKMAPGRIDINFO_H
 #define PARKMAPGRIDINFO_H
 
+#include <QSharedPointer>
+
 static const int MAP_WIDTH = 1000;
 static const int MAP_HEIGHT = 1000;
-static const int GRID_SIZE = 10;
+static const int GRID_SIZE = 5;
 
 enum MapGrid
 {
@@ -20,19 +22,13 @@ public:
     explicit ParkMapGridInfo();
     ~ParkMapGridInfo();
 
-    void SetOffsetX(int x){
-        offsetX += x;
-    }
-    int GetOffsetX() const{
-        return offsetX;
-    }
-    void SetOffsetY(int y){
-        offsetY += y;
-    }
-    int GetOffsetY() const{
-        return offsetY;
-    }
-    MapGrid GetGrid(int index){
+    static ParkMapGridInfo* GetIns();
+
+    inline void SetOffsetX(int x) { offsetX += x; }
+    inline int GetOffsetX() const { return offsetX; }
+    inline void SetOffsetY(int y) { offsetY += y; }
+    inline int GetOffsetY() const { return offsetY; }
+    inline MapGrid GetGrid(int index){
         if(index < 0 || index >= MAP_WIDTH * MAP_HEIGHT){
             return MG_None;
         }
@@ -47,6 +43,7 @@ private:
     void buildParkingPosition();
 
 private:
+    static QSharedPointer<ParkMapGridInfo> m_Ins;
     // map offset for drawing
     int offsetX = 0;
     int offsetY = 0;

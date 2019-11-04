@@ -1,6 +1,17 @@
 #include "parkmapgridinfo.h"
 #include "parkingpositioninfo.h"
 
+QSharedPointer<ParkMapGridInfo> ParkMapGridInfo::m_Ins;
+
+ParkMapGridInfo* ParkMapGridInfo::GetIns()
+{
+    if (nullptr == m_Ins.get())
+    {
+        m_Ins.reset(new ParkMapGridInfo());
+    }
+    return m_Ins.get();
+}
+
 ParkMapGridInfo::ParkMapGridInfo()
 {
     // default value
@@ -204,7 +215,7 @@ void ParkMapGridInfo::buildTopAndBottom()
     {
         for(int j = 0; j < 5; ++j)
         {
-            int index = (MAP_HEIGHT - j - 1) * MAP_WIDTH + i;
+            int index = (MAP_HEIGHT - j - 2) * MAP_WIDTH + i;
             map[index] = MapGrid::MG_ParkPosition;
         }
     }
