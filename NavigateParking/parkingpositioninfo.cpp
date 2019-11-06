@@ -2,7 +2,7 @@
 
 QSharedPointer<ParkingPositions> ParkingPositions::m_Ins;
 
-ParkingPositionInfo::ParkingPositionInfo(int index, ParkingPositionDirection direction, int gridIndex, int length, int width)
+ParkingPositionInfo::ParkingPositionInfo(int index, ParkingDirection direction, int gridIndex, int length, int width)
                      :m_ParkingIndex(index)
                      ,m_Direction(direction)
                      ,m_GridIndex(gridIndex)
@@ -37,7 +37,7 @@ ParkingPositions* ParkingPositions::GetIns()
     return m_Ins.get();
 }
 
-void ParkingPositions::AddParkingPosition(int index, ParkingPositionDirection direction, int gridIndex, int length, int width)
+void ParkingPositions::AddParkingPosition(int index, ParkingDirection direction, int gridIndex, int length, int width)
 {
     m_AllParkingPositions.push_back(QSharedPointer<ParkingPositionInfo>(
                                         new ParkingPositionInfo(index, direction, gridIndex, length, width)));

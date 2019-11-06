@@ -3,12 +3,13 @@
 
 #include <QSharedPointer>
 #include <QVector>
+#include "direction.h"
 
 class ParkingRoadInfo
 {
 public:
     ParkingRoadInfo() = delete;
-    ParkingRoadInfo(int index);
+    ParkingRoadInfo(int index, ParkingDirection direction);
     ~ParkingRoadInfo();
 
     inline void AddGrid(int grid) { m_Grids.push_back(grid); }
@@ -16,8 +17,11 @@ public:
     inline void AddLinkRoad(int index) { m_ParkingPositions.push_back(index); }
     inline int GetIndex() { return m_Index; }
 
+    int GetStartGrid();
+
 private:
     int m_Index;
+    ParkingDirection m_Direction;
     QVector<int> m_Grids;
     QVector<int> m_ParkingPositions;
     QVector<int> m_LinkRoads;
@@ -30,10 +34,17 @@ public:
     ~ParkingRoads();
 
     static ParkingRoads* GetIns();
+    inline const QVector<QSharedPointer<ParkingRoadInfo>>& GetRoads() const
+    {
+        return m_kAllRoads;
+    }
 
 private:
-    void buildLeftRoad();
-    void buildRoadIndex(int x, int y);
+    void buildVerticalRoad();
+    void buildHorizontalRoad();
+    void buildRoadIndex(int x, int y, int width);
+    bool isRoad(int x, int y);
+    bool isParkingPosition(int x, int y);
     inline int generateIndex() { return ++m_IndexGenerater; }
 
 private:

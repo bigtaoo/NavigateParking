@@ -284,12 +284,12 @@ void ParkMapGridInfo::buildVerticalRoad()
     {
         for(int j = 0; j < 5; ++j)
         {
-            int index = (495 + j) * MAP_WIDTH + i;
+            int index = (MAP_WIDTH / 2 - 5 + j) * MAP_WIDTH + i;
             map[index] = MapGrid::MG_Road_Left;
         }
         for(int j = 0; j < 5; ++j)
         {
-            int index = (500 + j) * MAP_WIDTH + i;
+            int index = (MAP_WIDTH / 2 + j) * MAP_WIDTH + i;
             map[index] = MapGrid::MG_Road_Right;
         }
     }
@@ -303,14 +303,14 @@ void ParkMapGridInfo::buildParkingPosition()
         if(i == 1 || i == 995)
         {
             ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
-                                                           ,ParkingPositionDirection::PPD_Horizontal
+                                                           ,ParkingDirection::PD_Horizontal
                                                            ,i * MAP_WIDTH + 1,5,4);
             i += 4;
         }
         else
         {
             ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
-                                                           ,ParkingPositionDirection::PPD_Horizontal
+                                                           ,ParkingDirection::PD_Horizontal
                                                            ,i * MAP_WIDTH + 1,5,3);
             i += 3;
         }
@@ -320,14 +320,14 @@ void ParkMapGridInfo::buildParkingPosition()
         if(i == 12)
         {
             ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
-                                                           ,ParkingPositionDirection::PPD_Vertical
+                                                           ,ParkingDirection::PD_Vertical
                                                            ,i + MAP_WIDTH,5,4);
             i += 4;
         }
         else
         {
             ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
-                                                           ,ParkingPositionDirection::PPD_Vertical
+                                                           ,ParkingDirection::PD_Vertical
                                                            ,i + MAP_WIDTH,5,3);
             i += 3;
         }
@@ -337,14 +337,14 @@ void ParkMapGridInfo::buildParkingPosition()
         if(i == 1 || i == 995)
         {
             ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
-                                                           ,ParkingPositionDirection::PPD_Horizontal
+                                                           ,ParkingDirection::PD_Horizontal
                                                            ,i * MAP_WIDTH + MAP_WIDTH - 5,5,4);
             i += 4;
         }
         else
         {
             ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
-                                                           ,ParkingPositionDirection::PPD_Horizontal
+                                                           ,ParkingDirection::PD_Horizontal
                                                            ,i * MAP_WIDTH + MAP_WIDTH - 5,5,3);
             i += 3;
         }
@@ -354,14 +354,14 @@ void ParkMapGridInfo::buildParkingPosition()
         if(i == 12)
         {
             ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
-                                                           ,ParkingPositionDirection::PPD_Vertical
+                                                           ,ParkingDirection::PD_Vertical
                                                            ,i + MAP_WIDTH * (MAP_HEIGHT - 5),5,4);
             i += 4;
         }
         else
         {
             ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
-                                                           ,ParkingPositionDirection::PPD_Vertical
+                                                           ,ParkingDirection::PD_Vertical
                                                            ,i + MAP_WIDTH * (MAP_HEIGHT - 5),5,3);
             i += 3;
         }
@@ -378,9 +378,12 @@ void ParkMapGridInfo::buildParkingPosition()
             {
                 continue;
             }
-            ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
-                                                           ,ParkingPositionDirection::PPD_Horizontal
+            if(map[(j + 2) * MAP_WIDTH + i] == MapGrid::MG_ParkPosition)
+            {
+                ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
+                                                           ,ParkingDirection::PD_Horizontal
                                                            ,index,5,3);
+            }
             j += 2;
         }
         ++iCount;

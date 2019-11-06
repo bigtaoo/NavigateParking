@@ -26,6 +26,7 @@ SOURCES += \
 
 HEADERS += \
     car.h \
+    direction.h \
     parkingpositioninfo.h \
     parkingroadinfo.h \
     parkmapgridinfo.h \

@@ -3,6 +3,7 @@
 #include "parkingpositioninfo.h"
 #include "randomparking.h"
 #include "car.h"
+#include "parkingroadinfo.h"
 
 ParkMapWindow::ParkMapWindow(QWindow *parent)
     : QWindow(parent)
@@ -139,8 +140,9 @@ void ParkMapWindow::renderMap(QPainter *painter)
     painter->restore();
 
     renderParkingUseInfo(painter);
-    renderParkingIndex(painter);
+    //renderParkingIndex(painter);
     renderPath(painter);
+    renderRoadIndex(painter);
 }
 
 void ParkMapWindow::renderParkingUseInfo(QPainter* painter)
@@ -184,6 +186,30 @@ void ParkMapWindow::renderParkingIndex(QPainter* painter)
     foreach (const QSharedPointer<ParkingPositionInfo> iter, all)
     {
         int index = iter.get()->GetGridIndex();
+        int x = index % MAP_WIDTH;
+        int y = index / MAP_WIDTH;
+
+        if(needDraw(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE))
+        {
+            painter->drawText(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE, QString::number(iter.get()->GetIndex()));
+        }
+    }
+    painter->restore();
+}
+
+void ParkMapWindow::renderRoadIndex(QPainter* painter)
+{
+    painter->setPen(QColor(255, 255, 0));
+    QFont font = painter->font();
+    font.setPointSize(10);
+    painter->setFont(font);
+    painter->setBrush(QColor(255, 182, 193));
+    painter->save();
+
+    const QVector<QSharedPointer<ParkingRoadInfo>>& all = ParkingRoads::GetIns()->GetRoads();
+    foreach (const QSharedPointer<ParkingRoadInfo> iter, all)
+    {
+        int index = iter.get()->GetStartGrid();
         int x = index % MAP_WIDTH;
         int y = index / MAP_WIDTH;
 

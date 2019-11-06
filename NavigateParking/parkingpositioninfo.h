@@ -3,30 +3,25 @@
 
 #include <QVector>
 #include <QSharedPointer>
-
-enum ParkingPositionDirection
-{
-    PPD_Horizontal,
-    PPD_Vertical,
-};
+#include "direction.h"
 
 class ParkingPositionInfo
 {
 public:
     ParkingPositionInfo() = delete;
-    explicit ParkingPositionInfo(int index, ParkingPositionDirection direction, int gridIndex, int length, int width);
+    explicit ParkingPositionInfo(int index, ParkingDirection direction, int gridIndex, int length, int width);
     ~ParkingPositionInfo();
 
     inline int GetIndex() const { return m_ParkingIndex; }
     inline int GetGridIndex() const { return m_GridIndex; }
-    inline ParkingPositionDirection GetDirection() const { return m_Direction; }
+    inline ParkingDirection GetDirection() const { return m_Direction; }
     inline bool IsUsed() const { return m_IsUsed; }
     inline void Use() { m_IsUsed = true; }
     inline void Unuse() { m_IsUsed = false; }
 
 private:
     int m_ParkingIndex;
-    ParkingPositionDirection m_Direction;
+    ParkingDirection m_Direction;
     int m_GridIndex;
     int m_Length;
     int m_Width;
@@ -40,7 +35,7 @@ public:
     ~ParkingPositions();
 
     static ParkingPositions* GetIns();
-    void AddParkingPosition(int index, ParkingPositionDirection direction, int gridIndex, int length, int width);
+    void AddParkingPosition(int index, ParkingDirection direction, int gridIndex, int length, int width);
     inline int GenerateIndex()
     {
         ++m_Index;

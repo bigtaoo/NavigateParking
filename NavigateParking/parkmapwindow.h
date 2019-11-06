@@ -21,6 +21,7 @@ private:
     void renderParkingIndex(QPainter* painter);
     void renderParkingUseInfo(QPainter* painter);
     void renderPath(QPainter* painter);
+    void renderRoadIndex(QPainter* painter);
     bool needDraw(int x, int y);
     void mousePressEvent(QMouseEvent *) override;
     void mouseMoveEvent(QMouseEvent *) override;
