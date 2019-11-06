@@ -22,10 +22,10 @@ ParkMapGridInfo::ParkMapGridInfo()
             int index = MAP_WIDTH * j + i;
             if(i == 0 || j == 0 || i == MAP_WIDTH - 1 || j == MAP_HEIGHT - 1)
             {
-                map[index] = MapGrid::MG_Wall;
+                m_Map[index] = MapGrid::MG_Wall;
                 continue;
             }
-            map[index] = MapGrid::MG_None;
+            m_Map[index] = MapGrid::MG_None;
         }
     }
 
@@ -51,12 +51,12 @@ void ParkMapGridInfo::buildLeftPart()
         for(int j = 0; j < 3; ++j)
         {
             int index = i * MAP_WIDTH + 6 + j;
-            map[index] = MapGrid::MG_Road_Left;
+            m_Map[index] = MapGrid::MG_Road_Left;
         }
         for(int j = 0; j < 3; ++j)
         {
             int index = i * MAP_WIDTH + 9 + j;
-            map[index] = MapGrid::MG_Road_Right;
+            m_Map[index] = MapGrid::MG_Road_Right;
         }
     }
     // build park position
@@ -66,13 +66,13 @@ void ParkMapGridInfo::buildLeftPart()
         for(int j = 0; j  < 5; ++j)
         {
             int index = i * MAP_WIDTH + 1 + j;
-            map[index] = MapGrid::MG_ParkPosition;
+            m_Map[index] = MapGrid::MG_ParkPosition;
         }
         // left near road
         for(int j = 0; j < 10; ++j)
         {
             int index = i * MAP_WIDTH + 12 + j;
-            map[index] = MapGrid::MG_ParkPosition;
+            m_Map[index] = MapGrid::MG_ParkPosition;
         }
     }
     // left part
@@ -84,19 +84,19 @@ void ParkMapGridInfo::buildLeftPart()
             for(int j = 0; j  < 3; ++j)
             {
                 int index = i * MAP_WIDTH + (22 + iter * 16) + j;
-                map[index] = MapGrid::MG_Road_Left;
+                m_Map[index] = MapGrid::MG_Road_Left;
             }
             // road right
             for(int j = 0; j  < 3; ++j)
             {
                 int index = i * MAP_WIDTH + (25 + iter * 16) + j;
-                map[index] = MapGrid::MG_Road_Right;
+                m_Map[index] = MapGrid::MG_Road_Right;
             }
             // park
             for(int j = 0; j < 10; ++j)
             {
                 int index = i * MAP_WIDTH + (28 + iter * 16) + j;
-                map[index] = MapGrid::MG_ParkPosition;
+                m_Map[index] = MapGrid::MG_ParkPosition;
             }
         }
     }
@@ -111,12 +111,12 @@ void ParkMapGridInfo::buildRightPart()
         for(int j = 0; j < 3; ++j)
         {
             int index = i * MAP_WIDTH + (MAP_WIDTH - 9) - j;
-            map[index] = MapGrid::MG_Road_Left;
+            m_Map[index] = MapGrid::MG_Road_Left;
         }
         for(int j = 0; j < 3; ++j)
         {
             int index = i * MAP_WIDTH + (MAP_WIDTH - 6) - j;
-            map[index] = MapGrid::MG_Road_Right;
+            m_Map[index] = MapGrid::MG_Road_Right;
         }
     }
     // build park position
@@ -126,13 +126,13 @@ void ParkMapGridInfo::buildRightPart()
         for(int j = 0; j  < 5; ++j)
         {
             int index = i * MAP_WIDTH + (MAP_WIDTH - 1) - j;
-            map[index] = MapGrid::MG_ParkPosition;
+            m_Map[index] = MapGrid::MG_ParkPosition;
         }
         // left near road
         for(int j = 0; j < 10; ++j)
         {
             int index = i * MAP_WIDTH + (MAP_WIDTH - 12) - j;
-            map[index] = MapGrid::MG_ParkPosition;
+            m_Map[index] = MapGrid::MG_ParkPosition;
         }
     }
     // left part
@@ -144,19 +144,19 @@ void ParkMapGridInfo::buildRightPart()
             for(int j = 0; j  < 3; ++j)
             {
                 int index = i * MAP_WIDTH + (MAP_WIDTH - 25 - iter * 16) - j;
-                map[index] = MapGrid::MG_Road_Left;
+                m_Map[index] = MapGrid::MG_Road_Left;
             }
             // road right
             for(int j = 0; j  < 3; ++j)
             {
                 int index = i * MAP_WIDTH + (MAP_WIDTH - 22 - iter * 16) - j;
-                map[index] = MapGrid::MG_Road_Right;
+                m_Map[index] = MapGrid::MG_Road_Right;
             }
             // park
             for(int j = 0; j < 10; ++j)
             {
                 int index = i * MAP_WIDTH + (MAP_WIDTH - 28 - iter * 16) - j;
-                map[index] = MapGrid::MG_ParkPosition;
+                m_Map[index] = MapGrid::MG_ParkPosition;
             }
         }
     }
@@ -170,31 +170,31 @@ void ParkMapGridInfo::buildCenterHorizontal()
         for(int j = 0; j  < 5; ++j)
         {
             int index = i * MAP_WIDTH + 486 + j;
-            map[index] = MapGrid::MG_Road_Left;
+            m_Map[index] = MapGrid::MG_Road_Left;
         }
         // right
         for(int j = 0; j < 5; ++j)
         {
             int index = i * MAP_WIDTH + 490 + j;
-            map[index] = MapGrid::MG_Road_Right;
+            m_Map[index] = MapGrid::MG_Road_Right;
         }
         // park
         for(int j = 0; j < 12; ++j)
         {
             int index = i * MAP_WIDTH + 494 + j;
-            map[index] = MapGrid::MG_ParkPosition;
+            m_Map[index] = MapGrid::MG_ParkPosition;
         }
         // left
         for(int j = 0; j  < 5; ++j)
         {
             int index = i * MAP_WIDTH + 506 + j;
-            map[index] = MapGrid::MG_Road_Left;
+            m_Map[index] = MapGrid::MG_Road_Left;
         }
         // right
         for(int j = 0; j < 5; ++j)
         {
             int index = i * MAP_WIDTH + 510 + j;
-            map[index] = MapGrid::MG_Road_Right;
+            m_Map[index] = MapGrid::MG_Road_Right;
         }
     }
 }
@@ -207,7 +207,7 @@ void ParkMapGridInfo::buildTopAndBottom()
         for(int j = 0; j < 5; ++j)
         {
             int index = (j + 1) * MAP_WIDTH + i;
-            map[index] = MapGrid::MG_ParkPosition;
+            m_Map[index] = MapGrid::MG_ParkPosition;
         }
     }
     // bottom
@@ -216,7 +216,7 @@ void ParkMapGridInfo::buildTopAndBottom()
         for(int j = 0; j < 5; ++j)
         {
             int index = (MAP_HEIGHT - j - 2) * MAP_WIDTH + i;
-            map[index] = MapGrid::MG_ParkPosition;
+            m_Map[index] = MapGrid::MG_ParkPosition;
         }
     }
 }
@@ -230,12 +230,12 @@ void ParkMapGridInfo::buildVerticalRoad()
         for(int j = 0; j < 3; ++j)
         {
             int index = (j + 6) * MAP_WIDTH + i;
-            map[index] = MapGrid::MG_Road_Left;
+            m_Map[index] = MapGrid::MG_Road_Left;
         }
         for(int j = 0; j < 3; ++j)
         {
             int index = (j + 9) * MAP_WIDTH + i;
-            map[index] = MapGrid::MG_Road_Right;
+            m_Map[index] = MapGrid::MG_Road_Right;
         }
     }
     // bottom
@@ -244,12 +244,12 @@ void ParkMapGridInfo::buildVerticalRoad()
         for(int j = 0; j < 3; ++j)
         {
             int index = (MAP_HEIGHT - 9 - j) * MAP_WIDTH + i;
-            map[index] = MapGrid::MG_Road_Left;
+            m_Map[index] = MapGrid::MG_Road_Left;
         }
         for(int j = 0; j < 3; ++j)
         {
             int index = (MAP_HEIGHT - 6 - j) * MAP_WIDTH + i;
-            map[index] = MapGrid::MG_Road_Right;
+            m_Map[index] = MapGrid::MG_Road_Right;
         }
     }
     // other road
@@ -260,22 +260,22 @@ void ParkMapGridInfo::buildVerticalRoad()
             for(int j = 0; j < 3; ++j)
             {
                 int index = (iter * 162 + j) * MAP_WIDTH + i;
-                map[index] = MapGrid::MG_Road_Left;
+                m_Map[index] = MapGrid::MG_Road_Left;
             }
             for(int j = 0; j < 3; ++j)
             {
                 int index = (iter * 162 + 3 + j) * MAP_WIDTH + i;
-                map[index] = MapGrid::MG_Road_Right;
+                m_Map[index] = MapGrid::MG_Road_Right;
             }
             for(int j = 0; j < 3; ++j)
             {
                 int index = (MAP_HEIGHT - iter * 162 - 3 - j) * MAP_WIDTH + i;
-                map[index] = MapGrid::MG_Road_Left;
+                m_Map[index] = MapGrid::MG_Road_Left;
             }
             for(int j = 0; j < 3; ++j)
             {
                 int index = (MAP_HEIGHT - iter * 162 - j) * MAP_WIDTH + i;
-                map[index] = MapGrid::MG_Road_Right;
+                m_Map[index] = MapGrid::MG_Road_Right;
             }
         }
     }
@@ -285,12 +285,12 @@ void ParkMapGridInfo::buildVerticalRoad()
         for(int j = 0; j < 5; ++j)
         {
             int index = (MAP_WIDTH / 2 - 5 + j) * MAP_WIDTH + i;
-            map[index] = MapGrid::MG_Road_Left;
+            m_Map[index] = MapGrid::MG_Road_Left;
         }
         for(int j = 0; j < 5; ++j)
         {
             int index = (MAP_WIDTH / 2 + j) * MAP_WIDTH + i;
-            map[index] = MapGrid::MG_Road_Right;
+            m_Map[index] = MapGrid::MG_Road_Right;
         }
     }
 }
@@ -374,11 +374,11 @@ void ParkMapGridInfo::buildParkingPosition()
         for(int j = 12; j < MAP_HEIGHT - 12; ++j)
         {
             int index = j * MAP_WIDTH + i;
-            if(map[index] != MapGrid::MG_ParkPosition)
+            if(m_Map[index] != MapGrid::MG_ParkPosition)
             {
                 continue;
             }
-            if(map[(j + 2) * MAP_WIDTH + i] == MapGrid::MG_ParkPosition)
+            if(m_Map[(j + 2) * MAP_WIDTH + i] == MapGrid::MG_ParkPosition)
             {
                 ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
                                                            ,ParkingDirection::PD_Horizontal

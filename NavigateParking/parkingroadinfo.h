@@ -12,12 +12,15 @@ public:
     ParkingRoadInfo(int index, ParkingDirection direction);
     ~ParkingRoadInfo();
 
-    inline void AddGrid(int grid) { m_Grids.push_back(grid); }
+    inline void AddGrid(int grid);
     inline void AddParkingPosition(int pos) { m_ParkingPositions.push_back(pos); }
-    inline void AddLinkRoad(int index) { m_ParkingPositions.push_back(index); }
+    inline void AddLinkRoad(int index) { m_LinkRoads.push_back(index); }
     inline int GetIndex() { return m_Index; }
+    inline const QVector<int>& GetGrids() const { return m_Grids; }
+    inline const QVector<int>& GetLinkRoads() const { return m_LinkRoads; }
 
     int GetStartGrid();
+    int GetLastGrid();
 
 private:
     int m_Index;
@@ -43,6 +46,9 @@ private:
     void buildVerticalRoad();
     void buildHorizontalRoad();
     void buildRoadIndex(int x, int y, int width);
+    void buildLikns();
+    void addUniqueLink(const QSharedPointer<ParkingRoadInfo>& road, int x, int y);
+    int getRoadIndexByPosition(int x, int y);
     bool isRoad(int x, int y);
     bool isParkingPosition(int x, int y);
     inline int generateIndex() { return ++m_IndexGenerater; }

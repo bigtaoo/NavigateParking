@@ -24,15 +24,31 @@ public:
 
     static ParkMapGridInfo* GetIns();
 
-    inline void SetOffsetX(int x) { offsetX += x; }
-    inline int GetOffsetX() const { return offsetX; }
-    inline void SetOffsetY(int y) { offsetY += y; }
-    inline int GetOffsetY() const { return offsetY; }
+    inline void SetOffsetX(int x) { m_OffsetX += x; }
+    inline int GetOffsetX() const { return m_OffsetX; }
+    inline void SetOffsetY(int y) { m_OffsetY += y; }
+    inline int GetOffsetY() const { return m_OffsetY; }
     inline MapGrid GetGrid(int index){
         if(index < 0 || index >= MAP_WIDTH * MAP_HEIGHT){
             return MG_None;
         }
-        return map[index];
+        return m_Map[index];
+    }
+    inline void SetRoadIndex(int gridIndex, int roadIndex)
+    {
+        if(gridIndex < 0 || gridIndex >= MAP_WIDTH * MAP_HEIGHT)
+        {
+            return;
+        }
+        m_GridToRoad[gridIndex] = roadIndex;
+    }
+    inline int GetRoadIndex(int gridIndex)
+    {
+        if(gridIndex < 0 || gridIndex >= MAP_WIDTH * MAP_HEIGHT)
+        {
+            return 0;
+        }
+        return m_GridToRoad[gridIndex];
     }
 private:
     void buildLeftPart();
@@ -45,10 +61,11 @@ private:
 private:
     static QSharedPointer<ParkMapGridInfo> m_Ins;
     // map offset for drawing
-    int offsetX = 0;
-    int offsetY = 0;
+    int m_OffsetX = 0;
+    int m_OffsetY = 0;
 
-    MapGrid map[MAP_WIDTH * MAP_HEIGHT];
+    MapGrid m_Map[MAP_WIDTH * MAP_HEIGHT];
+    int m_GridToRoad[MAP_WIDTH * MAP_HEIGHT];
 };
 
 #endif // PARKMAPGRIDINFO_H

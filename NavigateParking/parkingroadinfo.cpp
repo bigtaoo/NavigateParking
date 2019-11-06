@@ -30,7 +30,23 @@ int ParkingRoadInfo::GetStartGrid()
     {
         return 0;
     }
-    return m_Grids[0];
+    return m_Grids.first();
+}
+
+int ParkingRoadInfo::GetLastGrid()
+{
+    if(m_Grids.empty())
+    {
+        return 0;
+    }
+    return m_Grids.last();
+}
+
+void ParkingRoadInfo::AddGrid(int grid)
+{
+    m_Grids.push_back(grid);
+
+    ParkMapGridInfo::GetIns()->SetRoadIndex(grid, m_Index);
 }
 
 ParkingRoads::ParkingRoads() : m_IndexGenerater(0)
@@ -38,6 +54,8 @@ ParkingRoads::ParkingRoads() : m_IndexGenerater(0)
     buildVerticalRoad();
     buildHorizontalRoad();
     //buildRoadIndex(6, 1, 6);
+
+    buildLikns();
 }
 
 ParkingRoads::~ParkingRoads()
@@ -140,11 +158,11 @@ void ParkingRoads::buildVerticalRoad()
     ParkingRoadInfo* road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Vertical);
     m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
     // left
-    for(int k = 2; k < MAP_HEIGHT - 1; ++k)
+    for(int k = 1; k < MAP_HEIGHT - 1; ++k)
     {
         if(isRoad(13, k) == findRoad)
         {
-            for(int i = 6; i < 13; ++i)
+            for(int i = 6; i < 12; ++i)
             {
                 int index = k * MAP_WIDTH + i;
                 road->AddGrid(index);
@@ -155,6 +173,7 @@ void ParkingRoads::buildVerticalRoad()
             findRoad = !findRoad;
             road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Vertical);
             m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
+            --k;
         }
     }
     // middle
@@ -175,7 +194,7 @@ void ParkingRoads::buildVerticalRoad()
                 m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
 
                 bool newRoad = false;
-                for(int k = 13; k < MAP_HEIGHT - 13; ++k)
+                for(int k = 8; k < MAP_HEIGHT - 11; ++k)
                 {
                     if(!isRoad(m - 1, k))
                     {
@@ -197,16 +216,17 @@ void ParkingRoads::buildVerticalRoad()
                     }
                 }
             }
+            m += width;
         }
     }
 
     // right
     findRoad = false;
-    for(int k = 2; k < MAP_HEIGHT - 1; ++k)
+    for(int k = 1; k < MAP_HEIGHT - 1; ++k)
     {
         if(isRoad(MAP_WIDTH - 19, k) == findRoad)
         {
-            for(int i = 6; i < 13; ++i)
+            for(int i = 6; i < 12; ++i)
             {
                 int index = k * MAP_WIDTH + i + MAP_WIDTH - 17;
                 road->AddGrid(index);
@@ -217,6 +237,7 @@ void ParkingRoads::buildVerticalRoad()
             findRoad = !findRoad;
             road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Vertical);
             m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
+            --k;
         }
     }
 }
@@ -232,7 +253,7 @@ void ParkingRoads::buildHorizontalRoad()
     {
         if(isRoad(k, 13) == findRoad)
         {
-            for(int i = 7; i < 14; ++i)
+            for(int i = 6; i < 12; ++i)
             {
                 int index = i * MAP_WIDTH + k;
                 road->AddGrid(index);
@@ -258,13 +279,14 @@ void ParkingRoads::buildHorizontalRoad()
                 ++width;
             }
 
-            for(int j = 11; j < MAP_WIDTH - 13; ++j)
+            findRoad = false;
+            for(int j = 12; j < MAP_WIDTH - 13; ++j)
             {
                 if(isRoad(j, i - 1) == findRoad)
                 {
                     for(int m = 0; m < width; ++m)
                     {
-                        int index = (i + m + 1) * MAP_WIDTH + j - 1;
+                        int index = (i + m) * MAP_WIDTH + j;
                         road->AddGrid(index);
                     }
                 }
@@ -273,6 +295,7 @@ void ParkingRoads::buildHorizontalRoad()
                     findRoad = !findRoad;
                     road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Horizontal);
                     m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
+                    --j;
                 }
             }
             i += width;
@@ -298,14 +321,56 @@ void ParkingRoads::buildHorizontalRoad()
             --k;
         }
     }
-    road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Horizontal);
-    m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
-    for(int i = 0; i < 10; ++i)
+
+    //ParkMapGridInfo().GetIns()->SetOffsetX(-900 * GRID_SIZE);
+    //ParkMapGridInfo().GetIns()->SetOffsetY(-900 * GRID_SIZE);
+}
+
+void ParkingRoads::buildLikns()
+{
+    foreach (const QSharedPointer<ParkingRoadInfo>& road, m_kAllRoads)
     {
-        for(int j = 0; j < 6; ++j)
+        // find the road around this road
+        const QVector<int>& grids = road.get()->GetGrids();
+        foreach(const int& grid, grids)
         {
-            road->AddGrid((12 + i) + (MAP_HEIGHT - 10 + j) * MAP_WIDTH);
+            int x = grid % MAP_WIDTH;
+            int y = grid / MAP_WIDTH;
+            if(isRoad(x - 1, y))
+            {
+                addUniqueLink(road, x - 1, y);
+            }
+            if(isRoad(x + 1, y))
+            {
+                addUniqueLink(road, x + 1, y);
+            }
+            if(isRoad(x, y - 1))
+            {
+                addUniqueLink(road, x, y - 1);
+            }
+            if(isRoad(x, y + 1))
+            {
+                addUniqueLink(road, x, y + 1);
+            }
         }
     }
-    ParkMapGridInfo().GetIns()->SetOffsetY(-900 * GRID_SIZE);
+}
+
+void ParkingRoads::addUniqueLink(const QSharedPointer<ParkingRoadInfo>& road, int x, int y)
+{
+    int roadIndex = getRoadIndexByPosition(x, y);
+    if(roadIndex == 0 || roadIndex == road.get()->GetIndex())
+    {
+        return;
+    }
+    if(!road.get()->GetLinkRoads().contains(roadIndex))
+    {
+        road.get()->AddLinkRoad(roadIndex);
+    }
+}
+
+int ParkingRoads::getRoadIndexByPosition(int x, int y)
+{
+    int index = y * MAP_WIDTH + x;
+    return ParkMapGridInfo::GetIns()->GetRoadIndex(index);
 }

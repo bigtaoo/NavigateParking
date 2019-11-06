@@ -15,7 +15,8 @@ ParkMapWindow::ParkMapWindow(QWindow *parent)
     setGeometry(100, 100, 5000, 5000);
 
     ParkMapGridInfo::GetIns();
-
+    ParkingPositions::GetIns();
+    ParkingRoads::GetIns();
     RandomParking::GetIns();
 }
 
@@ -203,11 +204,10 @@ void ParkMapWindow::renderRoadIndex(QPainter* painter)
     QFont font = painter->font();
     font.setPointSize(10);
     painter->setFont(font);
-    painter->setBrush(QColor(255, 182, 193));
     painter->save();
 
     const QVector<QSharedPointer<ParkingRoadInfo>>& all = ParkingRoads::GetIns()->GetRoads();
-    foreach (const QSharedPointer<ParkingRoadInfo> iter, all)
+    foreach (const QSharedPointer<ParkingRoadInfo>& iter, all)
     {
         int index = iter.get()->GetStartGrid();
         int x = index % MAP_WIDTH;
@@ -216,6 +216,37 @@ void ParkMapWindow::renderRoadIndex(QPainter* painter)
         if(needDraw(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE))
         {
             painter->drawText(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE, QString::number(iter.get()->GetIndex()));
+        }
+
+        index = iter.get()->GetLastGrid();
+        x = index % MAP_WIDTH;
+        y = index / MAP_WIDTH;
+
+        if(needDraw(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE))
+        {
+            painter->drawText(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE, QString::number(iter.get()->GetIndex()));
+        }
+    }
+    painter->restore();
+
+    // link roads
+    painter->setPen(QColor(0, 255, 255));
+    painter->save();
+
+    foreach (const QSharedPointer<ParkingRoadInfo>& iter, all)
+    {
+        int index = iter.get()->GetStartGrid();
+        int x = index % MAP_WIDTH;
+        int y = index / MAP_WIDTH;
+
+        if(needDraw(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE))
+        {
+            int count = 1;
+            foreach(const int& link, iter.get()->GetLinkRoads())
+            {
+                ++count;
+                painter->drawText(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE * count, QString::number(link));
+            }
         }
     }
     painter->restore();
