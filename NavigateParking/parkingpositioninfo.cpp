@@ -1,5 +1,7 @@
 #include "parkingpositioninfo.h"
 #include "parkmapgridinfo.h"
+#include <qjsonarray.h>
+#include <qjsonobject.h>
 
 QSharedPointer<ParkingPositions> ParkingPositions::m_Ins;
 
@@ -69,4 +71,71 @@ const ParkingPositionInfo* ParkingPositions::GetParkingPositionInfoByIndex(int i
         }
     }
     return nullptr;
+}
+
+void ParkingPositions::Write(QJsonObject &json) const
+{
+    QJsonArray parkingPositionsArray;
+    foreach (const QSharedPointer<ParkingPositionInfo>& iter, m_AllParkingPositions)
+    {
+        QJsonObject parkingPositionObject;
+        iter.get()->Write(parkingPositionObject);
+        parkingPositionsArray.append(parkingPositionObject);
+    }
+    json["parkingPositions"] = parkingPositionsArray;
+}
+
+void ParkingPositions::Read(const QJsonObject &json)
+{
+    if (json.contains("parkingPositions") && json["parkingPositions"].isArray())
+    {
+        QJsonArray parkingPositionsArray = json["parkingPositions"].toArray();
+        m_AllParkingPositions.clear();
+        m_AllParkingPositions.reserve(parkingPositionsArray.size());
+        for (int i = 0; i < parkingPositionsArray.size(); ++i)
+        {
+            QJsonObject positionObject = parkingPositionsArray[i].toObject();
+            ParkingPositionInfo* parkingPosition = new ParkingPositionInfo(0,ParkingDirection::PD_Vertical,0,0,0);
+            parkingPosition->Read(positionObject);
+            m_AllParkingPositions.append(QSharedPointer<ParkingPositionInfo>(parkingPosition));
+        }
+    }
+}
+
+void ParkingPositionInfo::Write(QJsonObject &json) const
+{
+    json["ParkingIndex"] =  m_ParkingIndex;
+    json["Direction"] =  m_Direction;
+    json["GridIndex"] =  m_GridIndex;
+    json["Height"] =  m_Height;
+    json["Width"] =  m_Width;
+    json["IsUsed"] =  m_IsUsed;
+}
+
+void ParkingPositionInfo::Read(const QJsonObject &json)
+{
+    if (json.contains("ParkingIndex"))
+    {
+        m_ParkingIndex = json["ParkingIndex"].toInt();
+    }
+    if (json.contains("Direction"))
+    {
+        m_Direction = static_cast<ParkingDirection>(json["Direction"].toInt());
+    }
+    if (json.contains("GridIndex"))
+    {
+        m_GridIndex = json["GridIndex"].toInt();
+    }
+    if (json.contains("Height"))
+    {
+        m_Height = json["Height"].toInt();
+    }
+    if (json.contains("Width"))
+    {
+        m_Width = json["Width"].toInt();
+    }
+    if (json.contains("IsUsed") && json["IsUsed"].isBool())
+    {
+        m_IsUsed = json["IsUsed"].toInt();
+    }
 }

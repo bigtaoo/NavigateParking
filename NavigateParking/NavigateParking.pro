@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     car.cpp \
     main.cpp \
+    parkingdata.cpp \
     parkingpositioninfo.cpp \
     parkingroadinfo.cpp \
     parkmapgridinfo.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
 HEADERS += \
     car.h \
     direction.h \
+    parkingdata.h \
     parkingpositioninfo.h \
     parkingroadinfo.h \
     parkmapgridinfo.h \

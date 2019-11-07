@@ -1,6 +1,8 @@
 #include "parkingroadinfo.h"
 #include "parkmapgridinfo.h"
 #include "parkingpositioninfo.h"
+#include <QJsonArray>
+#include <QJsonObject>
 
 QSharedPointer<ParkingRoads> ParkingRoads::m_Ins;
 
@@ -420,5 +422,100 @@ void ParkingRoads::addUniqueParkingPosition(const QSharedPointer<ParkingRoadInfo
     if(!road.get()->GetParkingPositions().contains(parkingPositionIndex))
     {
         road.get()->AddParkingPosition(parkingPositionIndex);
+    }
+}
+
+void ParkingRoads::Write(QJsonObject &json) const
+{
+    QJsonArray allRoadsArray;
+    foreach (const QSharedPointer<ParkingRoadInfo>& iter, m_kAllRoads)
+    {
+        QJsonObject roadObject;
+        iter.get()->Write(roadObject);
+        allRoadsArray.append(roadObject);
+    }
+    json["roads"] = allRoadsArray;
+}
+
+void ParkingRoads::Read(const QJsonObject &json)
+{
+    if (json.contains("roads") && json["roads"].isArray())
+    {
+        QJsonArray roadsArray = json["roads"].toArray();
+        m_kAllRoads.clear();
+        m_kAllRoads.reserve(roadsArray.size());
+        for (int i = 0; i < roadsArray.size(); ++i)
+        {
+            QJsonObject roadObject = roadsArray[i].toObject();
+            ParkingRoadInfo* road = new ParkingRoadInfo(0,ParkingDirection::PD_Vertical);
+            road->Read(roadObject);
+            m_kAllRoads.append(QSharedPointer<ParkingRoadInfo>(road));
+        }
+    }
+}
+
+void ParkingRoadInfo::Write(QJsonObject &json) const
+{
+    json["Index"] =  m_Index;
+    json["Direction"] =  m_Direction;
+    QJsonArray gridsArray;
+    foreach(const int& iter, m_Grids)
+    {
+        gridsArray.append(iter);
+    }
+    json["grids"] = gridsArray;
+    QJsonArray parkingPositionsArray;
+    foreach(const int& iter, m_ParkingPositions)
+    {
+        parkingPositionsArray.append(iter);
+    }
+    json["parkingPositions"] = parkingPositionsArray;
+    QJsonArray linkRoadsArray;
+    foreach(const int& iter, m_LinkRoads)
+    {
+        linkRoadsArray.append(iter);
+    }
+    json["linkRoads"] = linkRoadsArray;
+}
+
+void ParkingRoadInfo::Read(const QJsonObject &json)
+{
+    if (json.contains("Index"))
+    {
+        m_Index = json["Index"].toInt();
+    }
+    if (json.contains("Direction"))
+    {
+        m_Direction = static_cast<ParkingDirection>(json["Direction"].toInt());
+    }
+    if (json.contains("grids") && json["grids"].isArray())
+    {
+        QJsonArray gridsArray = json["grids"].toArray();
+        m_Grids.clear();
+        m_Grids.resize(gridsArray.size());
+        for(int i = 0; i < gridsArray.size(); ++i)
+        {
+            m_Grids[i] = gridsArray[i].toInt();
+        }
+    }
+    if (json.contains("parkingPositions") && json["parkingPositions"].isArray())
+    {
+        QJsonArray parkingPositionsArray = json["parkingPositions"].toArray();
+        m_ParkingPositions.clear();
+        m_ParkingPositions.resize(parkingPositionsArray.size());
+        for(int i = 0; i < parkingPositionsArray.size(); ++i)
+        {
+            m_ParkingPositions[i] = parkingPositionsArray[i].toInt();
+        }
+    }
+    if (json.contains("linkRoads") && json["linkRoads"].isArray())
+    {
+        QJsonArray linkRoadsArray = json["linkRoads"].toArray();
+        m_LinkRoads.clear();
+        m_LinkRoads.resize(linkRoadsArray.size());
+        for(int i = 0; i < linkRoadsArray.size(); ++i)
+        {
+            m_LinkRoads[i] = linkRoadsArray[i].toInt();
+        }
     }
 }

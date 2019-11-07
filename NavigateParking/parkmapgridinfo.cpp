@@ -1,5 +1,7 @@
 #include "parkmapgridinfo.h"
 #include "parkingpositioninfo.h"
+#include <QJsonObject>
+#include <QJsonArray>
 
 QSharedPointer<ParkMapGridInfo> ParkMapGridInfo::m_Ins;
 
@@ -21,6 +23,42 @@ ParkMapGridInfo::ParkMapGridInfo()
 ParkMapGridInfo::~ParkMapGridInfo()
 {
 
+}
+
+void ParkMapGridInfo::Write(QJsonObject &json) const
+{
+    QJsonArray gridArray;
+    for(int i = 0; i < MAP_WIDTH * MAP_HEIGHT; ++i)
+    {
+        gridArray.append(m_Map[i]);
+    }
+    json["grids"] = gridArray;
+
+//    QJsonArray gridToRoadArray;
+//    for(int i = 0; i < MAP_WIDTH * MAP_HEIGHT; ++i)
+//    {
+//        gridToRoadArray.append(m_GridToRoad[i]);
+//    }
+//    json["gridToRoad"] = gridToRoadArray;
+
+//    QJsonArray gridToParkingPositionArray;
+//    for(int i = 0; i < MAP_WIDTH * MAP_HEIGHT; ++i)
+//    {
+//        gridToParkingPositionArray.append(m_GridToParkingPosition[i]);
+//    }
+//    json["gridToParkingPosition"] = gridToParkingPositionArray;
+}
+
+void ParkMapGridInfo::Read(const QJsonObject &json)
+{
+    if (json.contains("grids") && json["grids"].isArray())
+    {
+        QJsonArray gridsArray = json["grids"].toArray();
+        for(int i = 0; i < gridsArray.size() && i < MAP_WIDTH * MAP_HEIGHT; ++i)
+        {
+            m_Map[i] = static_cast<MapGrid>(gridsArray[i].toInt());
+        }
+    }
 }
 
 void ParkMapGridInfo::Initialize()

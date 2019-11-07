@@ -24,6 +24,8 @@ public:
 
     static ParkMapGridInfo* GetIns();
     void Initialize();
+    void Write(QJsonObject &json) const;
+    void Read(const QJsonObject &json);
 
     inline void SetOffsetX(int x) { m_OffsetX += x; }
     inline int GetOffsetX() const { return m_OffsetX; }

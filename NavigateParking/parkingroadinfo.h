@@ -23,6 +23,8 @@ public:
 
     int GetStartGrid();
     int GetLastGrid();
+    void Write(QJsonObject &json) const;
+    void Read(const QJsonObject &json);
 
 private:
     int m_Index;
@@ -44,6 +46,8 @@ public:
     {
         return m_kAllRoads;
     }
+    void Write(QJsonObject &json) const;
+    void Read(const QJsonObject &json);
 
 private:
     void buildVerticalRoad();

@@ -20,6 +20,8 @@ public:
     inline void Unuse() { m_IsUsed = false; }
     inline int GetHeight() const { return m_Height; }
     inline int GetWidth() const { return m_Width; }
+    void Write(QJsonObject &json) const;
+    void Read(const QJsonObject &json);
 
 private:
     int m_ParkingIndex;
@@ -48,6 +50,8 @@ public:
         return m_AllParkingPositions;
     }
     const ParkingPositionInfo* GetParkingPositionInfoByIndex(int index) const;
+    void Write(QJsonObject &json) const;
+    void Read(const QJsonObject &json);
 
 private:
     static QSharedPointer<ParkingPositions> m_Ins;
