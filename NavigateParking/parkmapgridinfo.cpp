@@ -14,12 +14,25 @@ ParkMapGridInfo* ParkMapGridInfo::GetIns()
 
 ParkMapGridInfo::ParkMapGridInfo()
 {
+//    m_OffsetX = -900 * GRID_SIZE;
+//    m_OffsetY = -900 * GRID_SIZE;
+}
+
+ParkMapGridInfo::~ParkMapGridInfo()
+{
+
+}
+
+void ParkMapGridInfo::Initialize()
+{
     // default value
     for(int i = 0; i < MAP_WIDTH; ++i)
     {
         for(int j = 0; j < MAP_HEIGHT; ++j)
         {
             int index = MAP_WIDTH * j + i;
+            m_GridToRoad[index] = 0;
+            m_GridToParkingPosition[index] = 0;
             if(i == 0 || j == 0 || i == MAP_WIDTH - 1 || j == MAP_HEIGHT - 1)
             {
                 m_Map[index] = MapGrid::MG_Wall;
@@ -35,11 +48,6 @@ ParkMapGridInfo::ParkMapGridInfo()
     buildTopAndBottom();
     buildVerticalRoad();
     buildParkingPosition();
-}
-
-ParkMapGridInfo::~ParkMapGridInfo()
-{
-
 }
 
 void ParkMapGridInfo::buildLeftPart()
@@ -304,14 +312,14 @@ void ParkMapGridInfo::buildParkingPosition()
         {
             ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
                                                            ,ParkingDirection::PD_Horizontal
-                                                           ,i * MAP_WIDTH + 1,5,4);
+                                                           ,i * MAP_WIDTH + 1,4,5);
             i += 4;
         }
         else
         {
             ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
                                                            ,ParkingDirection::PD_Horizontal
-                                                           ,i * MAP_WIDTH + 1,5,3);
+                                                           ,i * MAP_WIDTH + 1,3,5);
             i += 3;
         }
     }
@@ -338,14 +346,14 @@ void ParkMapGridInfo::buildParkingPosition()
         {
             ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
                                                            ,ParkingDirection::PD_Horizontal
-                                                           ,i * MAP_WIDTH + MAP_WIDTH - 5,5,4);
+                                                           ,i * MAP_WIDTH + MAP_WIDTH - 5,4,5);
             i += 4;
         }
         else
         {
             ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
                                                            ,ParkingDirection::PD_Horizontal
-                                                           ,i * MAP_WIDTH + MAP_WIDTH - 5,5,3);
+                                                           ,i * MAP_WIDTH + MAP_WIDTH - 5,3,5);
             i += 3;
         }
     }
@@ -380,9 +388,18 @@ void ParkMapGridInfo::buildParkingPosition()
             }
             if(m_Map[(j + 2) * MAP_WIDTH + i] == MapGrid::MG_ParkPosition)
             {
-                ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
-                                                           ,ParkingDirection::PD_Horizontal
-                                                           ,index,5,3);
+                if(i == 494 || i == 500)
+                {
+                    ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
+                                                               ,ParkingDirection::PD_Horizontal
+                                                               ,index,3,6);
+                }
+                else
+                {
+                    ParkingPositions::GetIns()->AddParkingPosition(ParkingPositions::GetIns()->GenerateIndex()
+                                                               ,ParkingDirection::PD_Horizontal
+                                                               ,index,3,5);
+                }
             }
             j += 2;
         }
@@ -396,11 +413,17 @@ void ParkMapGridInfo::buildParkingPosition()
             i += 4;
         }
         // center
-        if(i == 480 || i == 492 || i == 498)
+        if(i == 496)
         {
-            i += 1;
+            i = 493;
         }
-        if(i == 510)
+        static bool hasCheck504 = false;
+        if(i == 504 && !hasCheck504)
+        {
+            hasCheck504 = true;
+            i = 499;
+        }
+        if(i == 504 && hasCheck504)
         {
             i = 514;
             iCount = 0;

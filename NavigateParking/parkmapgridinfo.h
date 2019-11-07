@@ -5,7 +5,7 @@
 
 static const int MAP_WIDTH = 1000;
 static const int MAP_HEIGHT = 1000;
-static const int GRID_SIZE = 5;
+static const int GRID_SIZE = 15;
 
 enum MapGrid
 {
@@ -23,6 +23,7 @@ public:
     ~ParkMapGridInfo();
 
     static ParkMapGridInfo* GetIns();
+    void Initialize();
 
     inline void SetOffsetX(int x) { m_OffsetX += x; }
     inline int GetOffsetX() const { return m_OffsetX; }
@@ -50,6 +51,22 @@ public:
         }
         return m_GridToRoad[gridIndex];
     }
+    inline void SetParkingPositionIndex(int gridIndex, int parkingPositionIndex)
+    {
+        if(gridIndex < 0 || gridIndex >= MAP_WIDTH * MAP_HEIGHT)
+        {
+            return;
+        }
+        m_GridToParkingPosition[gridIndex] = parkingPositionIndex;
+    }
+    inline int GetParkingPositionIndex(int gridIndex)
+    {
+        if(gridIndex < 0 || gridIndex >= MAP_WIDTH * MAP_HEIGHT)
+        {
+            return 0;
+        }
+        return m_GridToParkingPosition[gridIndex];
+    }
 private:
     void buildLeftPart();
     void buildRightPart();
@@ -66,6 +83,7 @@ private:
 
     MapGrid m_Map[MAP_WIDTH * MAP_HEIGHT];
     int m_GridToRoad[MAP_WIDTH * MAP_HEIGHT];
+    int m_GridToParkingPosition[MAP_WIDTH * MAP_HEIGHT];
 };
 
 #endif // PARKMAPGRIDINFO_H

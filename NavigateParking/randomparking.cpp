@@ -16,8 +16,6 @@ RandomParking* RandomParking::GetIns()
 
 RandomParking::RandomParking()
 {
-    InitParking();
-
     QVector<int> tempPath;
     for(int i = 20; i < 120; ++i)
     {

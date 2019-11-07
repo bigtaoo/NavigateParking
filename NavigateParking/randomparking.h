@@ -11,8 +11,6 @@ public:
     ~RandomParking();
 
     void Update();
-
-private:
     void InitParking();
 
 private:

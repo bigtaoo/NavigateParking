@@ -1,5 +1,6 @@
 #include "parkingroadinfo.h"
 #include "parkmapgridinfo.h"
+#include "parkingpositioninfo.h"
 
 QSharedPointer<ParkingRoads> ParkingRoads::m_Ins;
 
@@ -51,16 +52,22 @@ void ParkingRoadInfo::AddGrid(int grid)
 
 ParkingRoads::ParkingRoads() : m_IndexGenerater(0)
 {
-    buildVerticalRoad();
-    buildHorizontalRoad();
-    //buildRoadIndex(6, 1, 6);
 
-    buildLikns();
 }
 
 ParkingRoads::~ParkingRoads()
 {
     m_kAllRoads.clear();
+}
+
+void ParkingRoads::Initialize()
+{
+    buildVerticalRoad();
+    buildHorizontalRoad();
+    //buildRoadIndex(6, 1, 6);
+
+    buildLiknRoads();
+    buildParkingPositions();
 }
 
 bool ParkingRoads::isRoad(int x, int y)
@@ -326,7 +333,7 @@ void ParkingRoads::buildHorizontalRoad()
     //ParkMapGridInfo().GetIns()->SetOffsetY(-900 * GRID_SIZE);
 }
 
-void ParkingRoads::buildLikns()
+void ParkingRoads::buildLiknRoads()
 {
     foreach (const QSharedPointer<ParkingRoadInfo>& road, m_kAllRoads)
     {
@@ -338,27 +345,27 @@ void ParkingRoads::buildLikns()
             int y = grid / MAP_WIDTH;
             if(isRoad(x - 1, y))
             {
-                addUniqueLink(road, x - 1, y);
+                addUniqueLinkRoad(road, x - 1, y);
             }
             if(isRoad(x + 1, y))
             {
-                addUniqueLink(road, x + 1, y);
+                addUniqueLinkRoad(road, x + 1, y);
             }
             if(isRoad(x, y - 1))
             {
-                addUniqueLink(road, x, y - 1);
+                addUniqueLinkRoad(road, x, y - 1);
             }
             if(isRoad(x, y + 1))
             {
-                addUniqueLink(road, x, y + 1);
+                addUniqueLinkRoad(road, x, y + 1);
             }
         }
     }
 }
 
-void ParkingRoads::addUniqueLink(const QSharedPointer<ParkingRoadInfo>& road, int x, int y)
+void ParkingRoads::addUniqueLinkRoad(const QSharedPointer<ParkingRoadInfo>& road, int x, int y)
 {
-    int roadIndex = getRoadIndexByPosition(x, y);
+    int roadIndex = ParkMapGridInfo::GetIns()->GetRoadIndex(y * MAP_WIDTH + x);
     if(roadIndex == 0 || roadIndex == road.get()->GetIndex())
     {
         return;
@@ -369,8 +376,49 @@ void ParkingRoads::addUniqueLink(const QSharedPointer<ParkingRoadInfo>& road, in
     }
 }
 
-int ParkingRoads::getRoadIndexByPosition(int x, int y)
+void ParkingRoads::buildParkingPositions()
 {
-    int index = y * MAP_WIDTH + x;
-    return ParkMapGridInfo::GetIns()->GetRoadIndex(index);
+    foreach (const QSharedPointer<ParkingRoadInfo>& road, m_kAllRoads)
+    {
+        // find the road around this road
+        const QVector<int>& grids = road.get()->GetGrids();
+        foreach(const int& grid, grids)
+        {
+            int x = grid % MAP_WIDTH;
+            int y = grid / MAP_WIDTH;
+            if(ParkMapGridInfo::GetIns()->GetGrid(x - 1 + y * MAP_WIDTH) == MapGrid::MG_ParkPosition)
+            {
+                addUniqueParkingPosition(road, x - 1, y);
+            }
+            if(ParkMapGridInfo::GetIns()->GetGrid(x + 1 + y * MAP_WIDTH) == MapGrid::MG_ParkPosition)
+            {
+                addUniqueParkingPosition(road, x + 1, y);
+            }
+            if(ParkMapGridInfo::GetIns()->GetGrid(x + (y - 1) * MAP_WIDTH) == MapGrid::MG_ParkPosition)
+            {
+                addUniqueParkingPosition(road, x, y - 1);
+            }
+            if(ParkMapGridInfo::GetIns()->GetGrid(x + (y + 1) * MAP_WIDTH) == MapGrid::MG_ParkPosition)
+            {
+                addUniqueParkingPosition(road, x, y + 1);
+            }
+        }
+    }
+}
+void ParkingRoads::addUniqueParkingPosition(const QSharedPointer<ParkingRoadInfo>& road, int x, int y)
+{
+    int parkingPositionIndex = ParkMapGridInfo::GetIns()->GetParkingPositionIndex(x + y * MAP_WIDTH);
+    if(parkingPositionIndex == 0)
+    {
+        return;
+    }
+    const ParkingPositionInfo* info = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(parkingPositionIndex);
+    if(info == nullptr || info->GetDirection() == road.get()->GetDirection())
+    {
+        return;
+    }
+    if(!road.get()->GetParkingPositions().contains(parkingPositionIndex))
+    {
+        road.get()->AddParkingPosition(parkingPositionIndex);
+    }
 }
