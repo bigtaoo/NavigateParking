@@ -16,12 +16,7 @@ RandomParking* RandomParking::GetIns()
 
 RandomParking::RandomParking()
 {
-    QVector<int> tempPath;
-    for(int i = 20; i < 120; ++i)
-    {
-        tempPath.push_back(9 * 1000 + i);
-    }
-    Car::GetIns()->SetPath(tempPath);
+
 }
 
 RandomParking::~RandomParking()
@@ -32,7 +27,7 @@ RandomParking::~RandomParking()
 void RandomParking::InitParking()
 {
     const QVector<QSharedPointer<ParkingPositionInfo>>& all = ParkingPositions::GetIns()->GetAllPositions();
-    foreach (const QSharedPointer<ParkingPositionInfo> iter, all)
+    foreach (const QSharedPointer<ParkingPositionInfo>& iter, all)
     {
         int randomRate = QRandomGenerator::global()->bounded(0,100);
         if(randomRate < 80)
@@ -40,4 +35,6 @@ void RandomParking::InitParking()
             iter.get()->Use();
         }
     }
+
+    Car::GetIns()->RandomPosition();
 }

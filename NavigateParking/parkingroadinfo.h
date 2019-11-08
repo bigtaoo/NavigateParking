@@ -21,8 +21,8 @@ public:
     inline const QVector<int>& GetParkingPositions() const { return m_ParkingPositions; }
     inline ParkingDirection GetDirection() const { return m_Direction; }
 
-    int GetStartGrid();
-    int GetLastGrid();
+    int GetStartGrid() const;
+    int GetLastGrid() const;
     void Write(QJsonObject &json) const;
     void Read(const QJsonObject &json);
 
@@ -46,6 +46,7 @@ public:
     {
         return m_kAllRoads;
     }
+    const ParkingRoadInfo* GetRoadByIndex(int index) const;
     void Write(QJsonObject &json) const;
     void Read(const QJsonObject &json);
 

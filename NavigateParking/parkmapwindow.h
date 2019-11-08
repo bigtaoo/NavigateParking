@@ -25,9 +25,11 @@ private:
     bool needDraw(int x, int y);
     void mousePressEvent(QMouseEvent *) override;
     void mouseMoveEvent(QMouseEvent *) override;
+    void timerEvent(QTimerEvent *event) override;
 
 private:
     QBackingStore *m_backingStore;
+    int m_TimerId;
 
     int m_TouchBeginTime;
     int m_TouchBeginX;

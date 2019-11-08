@@ -27,7 +27,7 @@ ParkingRoadInfo::~ParkingRoadInfo()
 
 }
 
-int ParkingRoadInfo::GetStartGrid()
+int ParkingRoadInfo::GetStartGrid() const
 {
     if(m_Grids.empty())
     {
@@ -36,7 +36,7 @@ int ParkingRoadInfo::GetStartGrid()
     return m_Grids.first();
 }
 
-int ParkingRoadInfo::GetLastGrid()
+int ParkingRoadInfo::GetLastGrid() const
 {
     if(m_Grids.empty())
     {
@@ -70,6 +70,18 @@ void ParkingRoads::Initialize()
 
     buildLiknRoads();
     buildParkingPositions();
+}
+
+const ParkingRoadInfo* ParkingRoads::GetRoadByIndex(int index) const
+{
+    foreach(QSharedPointer<ParkingRoadInfo> iter, m_kAllRoads)
+    {
+        if(iter.get()->GetIndex() == index)
+        {
+            return iter.get();
+        }
+    }
+    return nullptr;
 }
 
 bool ParkingRoads::isRoad(int x, int y)

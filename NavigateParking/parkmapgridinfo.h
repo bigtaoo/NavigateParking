@@ -27,10 +27,16 @@ public:
     void Write(QJsonObject &json) const;
     void Read(const QJsonObject &json);
 
-    inline void SetOffsetX(int x) { m_OffsetX += x; }
+    inline void IncreaseOffsetX(int x) { m_OffsetX += x; }
+    inline void SetOffsetX(int x) { m_OffsetX = x; }
     inline int GetOffsetX() const { return m_OffsetX; }
-    inline void SetOffsetY(int y) { m_OffsetY += y; }
+    inline void IncreaseOffsetY(int y) { m_OffsetY += y; }
+    inline void SetOffsetY(int y) { m_OffsetY = y; }
     inline int GetOffsetY() const { return m_OffsetY; }
+    inline void SetMapWidth(int width) { m_MapWidth = width; }
+    inline int GetMapWidth() const { return m_MapWidth; }
+    inline void SetMapHeight(int height) { m_MapHeight = height; }
+    inline int GetMapHeight() const { return m_MapHeight; }
     inline MapGrid GetGrid(int index){
         if(index < 0 || index >= MAP_WIDTH * MAP_HEIGHT){
             return MG_None;
@@ -82,6 +88,8 @@ private:
     // map offset for drawing
     int m_OffsetX = 0;
     int m_OffsetY = 0;
+    int m_MapWidth = 0;
+    int m_MapHeight = 0;
 
     MapGrid m_Map[MAP_WIDTH * MAP_HEIGHT];
     int m_GridToRoad[MAP_WIDTH * MAP_HEIGHT];

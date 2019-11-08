@@ -16,8 +16,7 @@ ParkMapGridInfo* ParkMapGridInfo::GetIns()
 
 ParkMapGridInfo::ParkMapGridInfo()
 {
-//    m_OffsetX = -900 * GRID_SIZE;
-//    m_OffsetY = -900 * GRID_SIZE;
+
 }
 
 ParkMapGridInfo::~ParkMapGridInfo()
@@ -28,35 +27,49 @@ ParkMapGridInfo::~ParkMapGridInfo()
 void ParkMapGridInfo::Write(QJsonObject &json) const
 {
     QJsonArray gridArray;
+    QJsonArray gridToRoadArray;
+    QJsonArray gridToParkingPositionArray;
     for(int i = 0; i < MAP_WIDTH * MAP_HEIGHT; ++i)
     {
         gridArray.append(m_Map[i]);
+        gridToRoadArray.append(m_GridToRoad[i]);
+        gridToParkingPositionArray.append(m_GridToParkingPosition[i]);
     }
     json["grids"] = gridArray;
-
-//    QJsonArray gridToRoadArray;
-//    for(int i = 0; i < MAP_WIDTH * MAP_HEIGHT; ++i)
-//    {
-//        gridToRoadArray.append(m_GridToRoad[i]);
-//    }
-//    json["gridToRoad"] = gridToRoadArray;
-
-//    QJsonArray gridToParkingPositionArray;
-//    for(int i = 0; i < MAP_WIDTH * MAP_HEIGHT; ++i)
-//    {
-//        gridToParkingPositionArray.append(m_GridToParkingPosition[i]);
-//    }
-//    json["gridToParkingPosition"] = gridToParkingPositionArray;
+    json["gridToRoad"] = gridToRoadArray;
+    json["gridToParkingPosition"] = gridToParkingPositionArray;
 }
 
 void ParkMapGridInfo::Read(const QJsonObject &json)
 {
+    QJsonArray gridsArray;
+    QJsonArray gridToRoadArray;
+    QJsonArray gridToParkingPositionArray;
     if (json.contains("grids") && json["grids"].isArray())
     {
-        QJsonArray gridsArray = json["grids"].toArray();
-        for(int i = 0; i < gridsArray.size() && i < MAP_WIDTH * MAP_HEIGHT; ++i)
+        gridsArray = json["grids"].toArray();
+    }
+    if (json.contains("gridToRoad") && json["gridToRoad"].isArray())
+    {
+        gridToRoadArray = json["gridToRoad"].toArray();
+    }
+    if (json.contains("gridToParkingPosition") && json["gridToParkingPosition"].isArray())
+    {
+        gridToParkingPositionArray = json["gridToParkingPosition"].toArray();
+    }
+    for(int i = 0; i < MAP_WIDTH * MAP_HEIGHT; ++i)
+    {
+        if(i < gridsArray.size())
         {
             m_Map[i] = static_cast<MapGrid>(gridsArray[i].toInt());
+        }
+        if(i < gridToRoadArray.size())
+        {
+            m_GridToRoad[i] = gridToRoadArray[i].toInt();
+        }
+        if(i < gridToParkingPositionArray.size())
+        {
+            m_GridToParkingPosition[i] = gridToParkingPositionArray[i].toInt();
         }
     }
 }

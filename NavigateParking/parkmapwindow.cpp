@@ -18,6 +18,8 @@ ParkMapWindow::ParkMapWindow(QWindow *parent)
     ParkingData::GetIns()->InitializeData();
 
     RandomParking::GetIns()->InitParking();
+
+    m_TimerId = startTimer(1000);
 }
 
 void ParkMapWindow::render()
@@ -73,7 +75,8 @@ void ParkMapWindow::renderMap(QPainter *painter)
 
     // draw road
     painter->setPen(Qt::NoPen);
-    painter->setBrush(QColor(123, 104, 238));
+    //painter->setBrush(QColor(123, 104, 238));
+    painter->setBrush(QColor(128, 128, 128));
     painter->save();
     for(int i = 0; i < MAP_WIDTH * MAP_HEIGHT; ++i){
         if(ParkMapGridInfo::GetIns()->GetGrid(i) == MG_Road_Left){
@@ -88,7 +91,8 @@ void ParkMapWindow::renderMap(QPainter *painter)
     painter->restore();
 
     painter->setPen(Qt::NoPen);
-    painter->setBrush(QColor(147, 112, 219));
+    //painter->setBrush(QColor(147, 112, 219));
+    painter->setBrush(QColor(128, 128, 128));
     painter->save();
     for(int i = 0; i < MAP_WIDTH * MAP_HEIGHT; ++i){
         if(ParkMapGridInfo::GetIns()->GetGrid(i) == MG_Road_Right){
@@ -314,6 +318,9 @@ void ParkMapWindow::renderPath(QPainter* painter)
 void ParkMapWindow::resizeEvent(QResizeEvent *resizeEvent)
 {
     m_backingStore->resize(resizeEvent->size());
+
+    ParkMapGridInfo::GetIns()->SetMapWidth(width());
+    ParkMapGridInfo::GetIns()->SetMapHeight(height());
 }
 
 void ParkMapWindow::exposeEvent(QExposeEvent *)
@@ -354,8 +361,8 @@ bool ParkMapWindow::event(QEvent *event)
         m_TouchBeginX = curX;
         m_TouchBeginY = curY;
 
-        ParkMapGridInfo::GetIns()->SetOffsetX(deltaX);
-        ParkMapGridInfo::GetIns()->SetOffsetY(deltaY);
+        ParkMapGridInfo::GetIns()->IncreaseOffsetX(deltaX);
+        ParkMapGridInfo::GetIns()->IncreaseOffsetY(deltaY);
 
         static int renderTime = QTime::currentTime().msec();
         int curTime = QTime::currentTime().msec();
@@ -393,8 +400,8 @@ void ParkMapWindow::mouseMoveEvent(QMouseEvent *event)
     m_TouchBeginX = curX;
     m_TouchBeginY = curY;
 
-    ParkMapGridInfo::GetIns()->SetOffsetX(deltaX);
-    ParkMapGridInfo::GetIns()->SetOffsetY(deltaY);
+    ParkMapGridInfo::GetIns()->IncreaseOffsetX(deltaX);
+    ParkMapGridInfo::GetIns()->IncreaseOffsetY(deltaY);
 
     render();
 }
@@ -409,4 +416,14 @@ bool ParkMapWindow::needDraw(int x, int y)
         return true;
     }
     return false;
+}
+
+void ParkMapWindow::timerEvent(QTimerEvent *event)
+{
+    if (event->timerId() == m_TimerId)
+    {
+        Car::GetIns()->Update();
+
+        render();
+    }
 }

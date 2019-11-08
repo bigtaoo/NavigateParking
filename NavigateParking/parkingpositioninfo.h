@@ -16,8 +16,8 @@ public:
     inline int GetGridIndex() const { return m_GridIndex; }
     inline ParkingDirection GetDirection() const { return m_Direction; }
     inline bool IsUsed() const { return m_IsUsed; }
-    inline void Use() { m_IsUsed = true; }
-    inline void Unuse() { m_IsUsed = false; }
+    inline void Use() const { m_IsUsed = true; }
+    inline void Unuse() const { m_IsUsed = false; }
     inline int GetHeight() const { return m_Height; }
     inline int GetWidth() const { return m_Width; }
     void Write(QJsonObject &json) const;
@@ -29,7 +29,7 @@ private:
     int m_GridIndex;
     int m_Height;
     int m_Width;
-    bool m_IsUsed;
+    mutable bool m_IsUsed;
 };
 
 class ParkingPositions
