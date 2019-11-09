@@ -54,8 +54,20 @@ void Car::setCamera()
     // move camera
     int x = m_StartPos % MAP_WIDTH;
     int y = m_StartPos / MAP_WIDTH;
-    ParkMapGridInfo::GetIns()->SetOffsetX(-x * GRID_SIZE + ParkMapGridInfo::GetIns()->GetMapWidth() / 2);
-    ParkMapGridInfo::GetIns()->SetOffsetY(-y * GRID_SIZE + ParkMapGridInfo::GetIns()->GetMapHeight() / 2);
+    int offsetX = -x * GRID_SIZE + ParkMapGridInfo::GetIns()->GetMapWidth() / 2;
+    int offsetY = -y * GRID_SIZE + ParkMapGridInfo::GetIns()->GetMapHeight() / 2;
+    if(offsetX > 0){
+        offsetX = 0;
+    }else if(offsetX < -MAP_WIDTH * GRID_SIZE + ParkMapGridInfo::GetIns()->GetMapWidth()){
+        offsetX = -MAP_WIDTH * GRID_SIZE + ParkMapGridInfo::GetIns()->GetMapWidth();
+    }
+    if(offsetY > 0){
+        offsetY = 0;
+    }else if(offsetY < -MAP_WIDTH * GRID_SIZE + ParkMapGridInfo::GetIns()->GetMapHeight()){
+        offsetY = -MAP_WIDTH * GRID_SIZE + ParkMapGridInfo::GetIns()->GetMapHeight();
+    }
+    ParkMapGridInfo::GetIns()->SetOffsetX(offsetX);
+    ParkMapGridInfo::GetIns()->SetOffsetY(offsetY);
 }
 
 void Car::Update()
@@ -78,6 +90,8 @@ void Car::findEmptyParkingPosition(QVector<int>& emptyParkingPosition)
 {
     // currently road
     int roadIndex = ParkMapGridInfo::GetIns()->GetRoadIndex(m_StartPos);
+    int startX = m_StartPos % MAP_WIDTH;
+    int startY = m_StartPos / MAP_WIDTH;
     QVector<int> nextList;
     QVector<int> openList;
     QVector<int> closeList;
@@ -95,12 +109,23 @@ void Car::findEmptyParkingPosition(QVector<int>& emptyParkingPosition)
         foreach (const int& checkRoadIndex, openList)
         {
             const ParkingRoadInfo* road = ParkingRoads::GetIns()->GetRoadByIndex(checkRoadIndex);
+            // each road only choose the nearest one
+            int dis = MAP_WIDTH * MAP_HEIGHT;
+            int choosePos = 0;
             foreach(const int& parkingPosition, road->GetParkingPositions())
             {
                 const ParkingPositionInfo* parkingPositionInfo = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(parkingPosition);
                 if(!parkingPositionInfo->IsUsed()){
-                    emptyParkingPosition.push_back(parkingPosition);
+                    int posIndex = parkingPositionInfo->GetGridIndex();
+                    int delta = qAbs(startX - posIndex % MAP_WIDTH) + qAbs(startY - posIndex / MAP_WIDTH);
+                    if(delta < dis){
+                        dis = delta;
+                        choosePos = parkingPosition;
+                    }
                 }
+            }
+            if(choosePos != 0){
+                emptyParkingPosition.push_back(choosePos);
             }
             foreach(const int& newRoad, road->GetLinkRoads()){
                 if(!closeList.contains(newRoad)){
