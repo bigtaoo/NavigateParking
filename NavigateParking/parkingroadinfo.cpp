@@ -74,7 +74,7 @@ void ParkingRoads::Initialize()
 
 const ParkingRoadInfo* ParkingRoads::GetRoadByIndex(int index) const
 {
-    foreach(QSharedPointer<ParkingRoadInfo> iter, m_kAllRoads)
+    foreach(const QSharedPointer<ParkingRoadInfo>& iter, m_kAllRoads)
     {
         if(iter.get()->GetIndex() == index)
         {

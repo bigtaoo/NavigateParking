@@ -6,6 +6,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QUrl>
 
 QSharedPointer<ParkingData> ParkingData::m_Ins;
 
@@ -20,7 +21,7 @@ ParkingData* ParkingData::GetIns()
 
 ParkingData::ParkingData()
 {
-
+    m_JsonFileName = ":/json/parking.json";
 }
 
 ParkingData::~ParkingData()
@@ -31,7 +32,7 @@ ParkingData::~ParkingData()
 void ParkingData::InitializeData()
 {
     // check if there is have data that has saved
-    QFile loadFile(QStringLiteral("parking.json"));
+    QFile loadFile(m_JsonFileName);
     if (!loadFile.exists())
     {
         ParkMapGridInfo::GetIns()->Initialize();
@@ -47,9 +48,15 @@ void ParkingData::InitializeData()
     }
 }
 
+bool ParkingData::HasJson()
+{
+    QFile loadFile(m_JsonFileName);
+    return loadFile.exists();
+}
+
 void ParkingData::saveData()
 {
-    QFile saveFile(QStringLiteral("parking.json"));
+    QFile saveFile("../../../parking.json");
 
     if (!saveFile.open(QIODevice::WriteOnly))
     {
@@ -80,7 +87,7 @@ void ParkingData::saveData()
 
 void ParkingData::loadData()
 {
-    QFile loadFile(QStringLiteral("parking.json"));
+    QFile loadFile(m_JsonFileName);
 
     if (!loadFile.open(QIODevice::ReadOnly)) {
         qWarning("Couldn't open json file.");

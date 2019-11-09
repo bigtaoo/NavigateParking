@@ -17,6 +17,7 @@ protected:
     void exposeEvent(QExposeEvent *event) override;
 
 private:
+    void initialize();
     void renderMap(QPainter* painter);
     void renderParkingIndex(QPainter* painter);
     void renderParkingUseInfo(QPainter* painter);
@@ -34,5 +35,6 @@ private:
     int m_TouchBeginTime;
     int m_TouchBeginX;
     int m_TouchBeginY;
+    bool m_Initialized;
 };
 #endif // PARKMAPWINDOW_H

@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    astar.cpp \
     car.cpp \
     main.cpp \
     parkingdata.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
     randomparking.cpp
 
 HEADERS += \
+    astar.h \
     car.h \
     direction.h \
     parkingdata.h \
@@ -39,3 +41,6 @@ HEADERS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    res.qrc

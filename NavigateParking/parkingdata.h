@@ -11,6 +11,7 @@ public:
 
     static ParkingData* GetIns();
     void InitializeData();
+    bool HasJson();
 
 private:
     void saveData();
@@ -18,6 +19,7 @@ private:
 
 private:
     static QSharedPointer<ParkingData> m_Ins;
+    QString m_JsonFileName;
 };
 
 #endif // PARKINGDATA_H

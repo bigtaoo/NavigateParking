@@ -30,11 +30,14 @@ void RandomParking::InitParking()
     foreach (const QSharedPointer<ParkingPositionInfo>& iter, all)
     {
         int randomRate = QRandomGenerator::global()->bounded(0,100);
-        if(randomRate < 80)
+        if(randomRate < 98)
         {
             iter.get()->Use();
         }
     }
+
+//    const ParkingPositionInfo* info = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(5848);
+//    info->Unuse();
 
     Car::GetIns()->RandomPosition();
 }
