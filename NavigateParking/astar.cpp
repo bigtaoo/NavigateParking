@@ -89,17 +89,17 @@ void AStar::FindPath(int start, int end, QVector<int> &path)
         openSet.erase(std::find(openSet.begin(), openSet.end(), current));
 
         for (int i = 0; i < 4; ++i) {
-            int newCoordinates(direction( current->position, i));
-            if (!isRoad(newCoordinates) ||
-                findNodeOnList(closedSet, newCoordinates)) {
+            int newPosition(direction(current->position, i));
+            if (!isRoad(newPosition) ||
+                findNodeOnList(closedSet, newPosition)) {
                 continue;
             }
 
             int totalCost = current->G + ((i < 4) ? 10 : 14);
 
-            Node *successor = findNodeOnList(openSet, newCoordinates);
+            Node *successor = findNodeOnList(openSet, newPosition);
             if (successor == nullptr) {
-                successor = new Node(newCoordinates, current);
+                successor = new Node(newPosition, current);
                 successor->G = totalCost;
                 successor->H = getDistance(successor->position, end);
                 openSet.insert(successor);

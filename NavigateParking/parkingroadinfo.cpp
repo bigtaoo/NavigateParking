@@ -103,75 +103,75 @@ bool ParkingRoads::isParkingPosition(int x, int y)
     return false;
 }
 
-void ParkingRoads::buildRoadIndex(int x, int y, int width)
-{
-    if(y > MAP_HEIGHT || x > MAP_WIDTH)
-    {
-        return;
-    }
-    ParkingRoadInfo* road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Horizontal);
-    m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
+//void ParkingRoads::buildRoadIndex(int x, int y, int width)
+//{
+//    if(y > MAP_HEIGHT || x > MAP_WIDTH)
+//    {
+//        return;
+//    }
+//    ParkingRoadInfo* road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Horizontal);
+//    m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
 
-    bool IsHorizontal = true;
-    if(ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * y + x - 1) == MapGrid::MG_ParkPosition)
-    {
-        IsHorizontal = false;
-    }
-    if(IsHorizontal)
-    {
-        //MapGrid checkGrid = ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * (y + width + 1) + x);
-        bool checkGrid = isRoad(x, y + width + 1);
-        int checkX = x;
-        bool tempGrid = isRoad(x + 1, y + 1 + width);
-        while(x < MAP_WIDTH && tempGrid == checkGrid)
-        {
-            for(int i = 0; i < width; ++i)
-            {
-                road->AddGrid((y + i) * MAP_WIDTH + x);
-            }
-            ++x;
-            tempGrid = isRoad(x + width + 1, y + 1);
-        }
-        if(!checkGrid)
-        {
-            // right direction
-            buildRoadIndex(x + 1, y, width);
-        }
-        if(isRoad(x, y + width + 1))
-        {
-            // bottom direction
-            buildRoadIndex(x, y + width + 1, x - checkX + 1);
-        }
-    }
-    else
-    {
-        //MapGrid checkGrid = ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * y + x + width + 1);
-        bool checkGrid = isRoad(x + width + 1, y);
-        int checkY = y;
-        //MapGrid tempGrid = ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * (y + 1) + x + width + 1);
-        bool tempGrid = isRoad(x + width + 1, y + 1);
-        while(y < MAP_HEIGHT && tempGrid == checkGrid)
-        {
-            for(int i = 0; i < width; ++i)
-            {
-                road->AddGrid(y * MAP_WIDTH + x + i);
-            }
-            ++y;
-            //tempGrid = ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * (y + 1) + x + width + 1);
-            tempGrid = isRoad(x + width + 1, y + 1);
-        }
-        if(!checkGrid)
-        {
-            // bottom direction
-            buildRoadIndex(x, y + 1, width);
-        }
-        if(isRoad(x, y + 1))
-        {
-            // right direction
-            buildRoadIndex(x + width + 1, checkY, y - checkY + 1);
-        }
-    }
-}
+//    bool IsHorizontal = true;
+//    if(ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * y + x - 1) == MapGrid::MG_ParkPosition)
+//    {
+//        IsHorizontal = false;
+//    }
+//    if(IsHorizontal)
+//    {
+//        //MapGrid checkGrid = ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * (y + width + 1) + x);
+//        bool checkGrid = isRoad(x, y + width + 1);
+//        int checkX = x;
+//        bool tempGrid = isRoad(x + 1, y + 1 + width);
+//        while(x < MAP_WIDTH && tempGrid == checkGrid)
+//        {
+//            for(int i = 0; i < width; ++i)
+//            {
+//                road->AddGrid((y + i) * MAP_WIDTH + x);
+//            }
+//            ++x;
+//            tempGrid = isRoad(x + width + 1, y + 1);
+//        }
+//        if(!checkGrid)
+//        {
+//            // right direction
+//            buildRoadIndex(x + 1, y, width);
+//        }
+//        if(isRoad(x, y + width + 1))
+//        {
+//            // bottom direction
+//            buildRoadIndex(x, y + width + 1, x - checkX + 1);
+//        }
+//    }
+//    else
+//    {
+//        //MapGrid checkGrid = ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * y + x + width + 1);
+//        bool checkGrid = isRoad(x + width + 1, y);
+//        int checkY = y;
+//        //MapGrid tempGrid = ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * (y + 1) + x + width + 1);
+//        bool tempGrid = isRoad(x + width + 1, y + 1);
+//        while(y < MAP_HEIGHT && tempGrid == checkGrid)
+//        {
+//            for(int i = 0; i < width; ++i)
+//            {
+//                road->AddGrid(y * MAP_WIDTH + x + i);
+//            }
+//            ++y;
+//            //tempGrid = ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * (y + 1) + x + width + 1);
+//            tempGrid = isRoad(x + width + 1, y + 1);
+//        }
+//        if(!checkGrid)
+//        {
+//            // bottom direction
+//            buildRoadIndex(x, y + 1, width);
+//        }
+//        if(isRoad(x, y + 1))
+//        {
+//            // right direction
+//            buildRoadIndex(x + width + 1, checkY, y - checkY + 1);
+//        }
+//    }
+//}
 
 void ParkingRoads::buildVerticalRoad()
 {
@@ -300,7 +300,7 @@ void ParkingRoads::buildHorizontalRoad()
                 ++width;
             }
 
-            findRoad = false;
+            findRoad = true;
             for(int j = 12; j < MAP_WIDTH - 13; ++j)
             {
                 if(isRoad(j, i - 1) == findRoad)
@@ -323,7 +323,7 @@ void ParkingRoads::buildHorizontalRoad()
         }
     }
     // bottom
-    findRoad = false;
+    findRoad = true;
     for(int k = 12; k < MAP_WIDTH - 12; ++k)
     {
         if(isRoad(k, MAP_HEIGHT - 13) == findRoad)
@@ -342,9 +342,6 @@ void ParkingRoads::buildHorizontalRoad()
             --k;
         }
     }
-
-    //ParkMapGridInfo().GetIns()->SetOffsetX(-900 * GRID_SIZE);
-    //ParkMapGridInfo().GetIns()->SetOffsetY(-900 * GRID_SIZE);
 }
 
 void ParkingRoads::buildLiknRoads()

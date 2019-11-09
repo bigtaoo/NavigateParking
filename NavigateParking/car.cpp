@@ -42,7 +42,7 @@ void Car::RandomPosition()
     int randomIndex = QRandomGenerator::global()->bounded(0, grids.size());
     m_StartPos = grids[randomIndex];
 
-//    m_StartPos = 838 * 1000 + 981;
+//    m_StartPos = 991 * 1000 + 12;
 
     findPath();
     setCamera();
@@ -78,6 +78,7 @@ void Car::Update()
         const ParkingPositionInfo* parkingPosition = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(m_TargetPos);
         if(parkingPosition != nullptr){
             parkingPosition->Use();
+            m_Render = true;
         }
     }
     if(m_TimeCount == 5){
@@ -149,8 +150,6 @@ void Car::findPath()
     foreach(const int& target, emptyParkingPosition)
     {
         path.clear();
-        int startX = m_StartPos % MAP_WIDTH;
-        int startY = m_StartPos / MAP_WIDTH;
         const ParkingPositionInfo* targetParkingPosition = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(target);
         int endX = targetParkingPosition->GetGridIndex() % MAP_WIDTH;
         int endY = targetParkingPosition->GetGridIndex() / MAP_WIDTH;
@@ -178,7 +177,7 @@ void Car::findPath()
                 }
             }
         }
-        AStar::FindPath(startX + startY * MAP_WIDTH, endX + endY * MAP_WIDTH, path);
+        AStar::FindPath(m_StartPos, endX + endY * MAP_WIDTH, path);
         path.push_back(targetParkingPosition->GetGridIndex());
         if(path.size() < lastLength){
             lastLength = path.size();
