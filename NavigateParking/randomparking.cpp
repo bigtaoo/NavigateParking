@@ -36,8 +36,10 @@ void RandomParking::InitParking()
         }
     }
 
-//    const ParkingPositionInfo* info = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(5848);
+//    const ParkingPositionInfo* info = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(39263);
 //    info->Unuse();
+//    const ParkingPositionInfo* info1 = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(37380);
+//    info1->Unuse();
 
     Car::GetIns()->RandomPosition();
 }

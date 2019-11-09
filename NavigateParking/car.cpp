@@ -42,7 +42,7 @@ void Car::RandomPosition()
     int randomIndex = QRandomGenerator::global()->bounded(0, grids.size());
     m_StartPos = grids[randomIndex];
 
-//    m_StartPos = 495 * 1000 + 139;
+//    m_StartPos = 838 * 1000 + 981;
 
     findPath();
     setCamera();

@@ -56,7 +56,7 @@ bool ParkingData::HasJson()
 
 void ParkingData::saveData()
 {
-    QFile saveFile("../../../parking.json");
+    QFile saveFile("../../../../parking.json");
 
     if (!saveFile.open(QIODevice::WriteOnly))
     {

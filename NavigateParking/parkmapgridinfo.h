@@ -5,7 +5,7 @@
 
 static const int MAP_WIDTH = 1000;
 static const int MAP_HEIGHT = 1000;
-static const int GRID_SIZE = 5;
+static const int GRID_SIZE = 15;
 
 enum MapGrid
 {

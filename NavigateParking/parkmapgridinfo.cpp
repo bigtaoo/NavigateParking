@@ -284,7 +284,7 @@ void ParkMapGridInfo::buildVerticalRoad()
 
 {
     // top
-    for(int i = 12; i < MAP_WIDTH - 12; ++i)
+    for(int i = 12; i < MAP_WIDTH - 11; ++i)
     {
         for(int j = 0; j < 3; ++j)
         {
@@ -298,7 +298,7 @@ void ParkMapGridInfo::buildVerticalRoad()
         }
     }
     // bottom
-    for(int i = 12; i < MAP_WIDTH - 12; ++i)
+    for(int i = 12; i < MAP_WIDTH - 11; ++i)
     {
         for(int j = 0; j < 3; ++j)
         {
@@ -314,7 +314,7 @@ void ParkMapGridInfo::buildVerticalRoad()
     // other road
     for(int iter = 1; iter < 3; ++iter)
     {
-        for(int i = 12; i < MAP_WIDTH - 12; ++i)
+        for(int i = 12; i < MAP_WIDTH - 11; ++i)
         {
             for(int j = 0; j < 3; ++j)
             {
@@ -339,7 +339,7 @@ void ParkMapGridInfo::buildVerticalRoad()
         }
     }
     // center
-    for(int i = 12; i < MAP_WIDTH - 12; ++i)
+    for(int i = 12; i < MAP_WIDTH - 11; ++i)
     {
         for(int j = 0; j < 5; ++j)
         {
@@ -428,9 +428,9 @@ void ParkMapGridInfo::buildParkingPosition()
 
     // middle
     int iCount = 0;
-    for(int i = 12; i < MAP_WIDTH - 12; ++i)
+    for(int i = 12; i < MAP_WIDTH - 11; ++i)
     {
-        for(int j = 12; j < MAP_HEIGHT - 12; ++j)
+        for(int j = 12; j < MAP_HEIGHT - 11; ++j)
         {
             int index = j * MAP_WIDTH + i;
             if(m_Map[index] != MapGrid::MG_ParkPosition)
