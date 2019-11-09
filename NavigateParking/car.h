@@ -12,7 +12,7 @@ public:
 
     static Car* GetIns();
 
-    inline int GetCurrentPos() const { return m_StartPos; }
+    inline int GetCurrentPos() const { return m_CurrentPos; }
     inline int GetTargetPos() const { return m_TargetPos; }
     inline const QVector<int> GetPath() const { return m_Path; }
     inline bool NeedRender() const { return m_Render; }
@@ -27,6 +27,7 @@ private:
     bool isRoad(int x, int y);
     void setCamera();
     void findEmptyParkingPosition(QVector<int>& emptyParkingPosition);
+    void moveCar();
 
 private:
     static QSharedPointer<Car> m_Ins;
@@ -34,6 +35,8 @@ private:
     int m_TargetPos;
     int m_TimeCount;
     bool m_Render;
+    int m_MoveIndex;
+    int m_CurrentPos;
     QVector<int> m_Path;   
 };
 

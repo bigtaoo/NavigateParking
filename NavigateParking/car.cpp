@@ -15,7 +15,13 @@ Car* Car::GetIns()
     return m_Ins.get();
 }
 
-Car::Car() : m_StartPos(0), m_TargetPos(0), m_TimeCount(0), m_Render(false)
+Car::Car() :
+    m_StartPos(0)
+  , m_TargetPos(0)
+  , m_TimeCount(0)
+  , m_Render(false)
+  , m_MoveIndex(0)
+  , m_CurrentPos(0)
 {
     m_Path.reserve(1000);
 }
@@ -43,17 +49,19 @@ void Car::RandomPosition()
     m_StartPos = grids[randomIndex];
 
 //    m_StartPos = 991 * 1000 + 12;
+    m_Render = true;   
+    m_CurrentPos = m_StartPos;
 
     findPath();
     setCamera();
-    m_Render = true;
+    m_MoveIndex = m_Path.size() - 1;
 }
 
 void Car::setCamera()
 {
     // move camera
-    int x = m_StartPos % MAP_WIDTH;
-    int y = m_StartPos / MAP_WIDTH;
+    int x = m_CurrentPos % MAP_WIDTH;
+    int y = m_CurrentPos / MAP_WIDTH;
     int offsetX = -x * GRID_SIZE + ParkMapGridInfo::GetIns()->GetMapWidth() / 2;
     int offsetY = -y * GRID_SIZE + ParkMapGridInfo::GetIns()->GetMapHeight() / 2;
     if(offsetX > 0){
@@ -73,18 +81,42 @@ void Car::setCamera()
 void Car::Update()
 {
 //    return;
-    ++m_TimeCount;
-    if(m_TimeCount == 3){
+//    ++m_TimeCount;
+//    if(m_TimeCount == 3){
+//        const ParkingPositionInfo* parkingPosition = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(m_TargetPos);
+//        if(parkingPosition != nullptr){
+//            parkingPosition->Use();
+//            m_Render = true;
+//        }
+//    }
+//    if(m_TimeCount == 5){
+//        m_TimeCount = 0;
+//        RandomPosition();
+//    }
+
+    moveCar();
+}
+
+void Car::moveCar()
+{
+    m_MoveIndex -= 3;
+    if(m_MoveIndex <= 0){
         const ParkingPositionInfo* parkingPosition = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(m_TargetPos);
         if(parkingPosition != nullptr){
             parkingPosition->Use();
             m_Render = true;
         }
+        // wait three seconds
+        ++m_TimeCount;
+        if(m_TimeCount >= 3){
+            m_TimeCount = 0;
+            RandomPosition();
+        }
+        return;
     }
-    if(m_TimeCount == 5){
-        m_TimeCount = 0;
-        RandomPosition();
-    }
+    m_CurrentPos = m_Path[m_MoveIndex];
+    setCamera();
+    m_Render = true;
 }
 
 void Car::findEmptyParkingPosition(QVector<int>& emptyParkingPosition)
