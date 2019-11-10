@@ -59,24 +59,21 @@ void ParkMapWindow::render()
 void ParkMapWindow::renderMap(QPainter *painter)
 {
     //p->setRenderHint(QPainter::Antialiasing);
-
     painter->translate(ParkMapGridInfo::GetIns()->GetOffsetX(), ParkMapGridInfo::GetIns()->GetOffsetY());
 
-//    // draw grid
-//    for(int i = 0; i < MAP_WIDTH; ++i)
-//    {
-//        if(needDraw(0, i * GRID_SIZE))
-//        {
-//            painter->drawLine(0, i * GRID_SIZE, GRID_SIZE * MAP_WIDTH, i * GRID_SIZE);
-//        }
-//    }
-//    for(int i = 0; i < MAP_HEIGHT; ++i)
-//    {
-//        if(needDraw(i * GRID_SIZE, 0))
-//        {
-//            painter->drawLine(i * GRID_SIZE, 0, i * GRID_SIZE, GRID_SIZE * MAP_WIDTH);
-//        }
-//    }
+//    renderGrid(painter);
+    renderWall(painter);
+    renderRoad(painter);
+//    renderParkPlace(painter);
+//    renderNumber(painter);
+    renderParkingUseInfo(painter);
+    renderParkingIndex(painter);
+    renderPath(painter);
+//    renderRoadIndex(painter);
+}
+
+void ParkMapWindow::renderWall(QPainter* painter)
+{
     // draw wall
     painter->setPen(Qt::NoPen);
     painter->setBrush(QColor(244, 164, 96));
@@ -91,7 +88,25 @@ void ParkMapWindow::renderMap(QPainter *painter)
         }
     }
     painter->restore();
+}
 
+void ParkMapWindow::renderGrid(QPainter* painter)
+{
+    // draw grid
+    for(int i = 0; i < MAP_WIDTH; ++i){
+        if(needDraw(0, i * GRID_SIZE)){
+            painter->drawLine(0, i * GRID_SIZE, GRID_SIZE * MAP_WIDTH, i * GRID_SIZE);
+        }
+    }
+    for(int i = 0; i < MAP_HEIGHT; ++i){
+        if(needDraw(i * GRID_SIZE, 0)){
+            painter->drawLine(i * GRID_SIZE, 0, i * GRID_SIZE, GRID_SIZE * MAP_WIDTH);
+        }
+    }
+}
+
+void ParkMapWindow::renderRoad(QPainter* painter)
+{
     // draw road
     painter->setPen(Qt::NoPen);
     //painter->setBrush(QColor(123, 104, 238));
@@ -118,60 +133,53 @@ void ParkMapWindow::renderMap(QPainter *painter)
 //        if(ParkMapGridInfo::GetIns()->GetGrid(i) == MG_Road_Right){
 //            int y = i / MAP_WIDTH;
 //            int x = i % MAP_WIDTH;
-//            if(needDraw(x * GRID_SIZE, y * GRID_SIZE))
-//            {
+//            if(needDraw(x * GRID_SIZE, y * GRID_SIZE)){
 //                painter->drawRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
 //            }
 //        }
 //    }
 //    painter->restore();
+}
 
-//    // draw parking place
-//    painter->setPen(Qt::NoPen);
-//    painter->setBrush(QColor(65, 105, 225));
-//    painter->save();
-//    for(int i = 0; i < MAP_WIDTH * MAP_HEIGHT; ++i){
-//        if(ParkMapGridInfo::GetIns()->GetGrid(i) == MG_ParkPosition){
-//            int y = i / MAP_WIDTH;
-//            int x = i % MAP_WIDTH;
-//            if(needDraw(x * GRID_SIZE, y * GRID_SIZE))
-//            {
-//                painter->drawRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
-//            }
-//        }
-//    }
-//    painter->restore();
+void ParkMapWindow::renderParkPlace(QPainter* painter)
+{
+    // draw parking place
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QColor(65, 105, 225));
+    painter->save();
+    for(int i = 0; i < MAP_WIDTH * MAP_HEIGHT; ++i){
+        if(ParkMapGridInfo::GetIns()->GetGrid(i) == MG_ParkPosition){
+            int y = i / MAP_WIDTH;
+            int x = i % MAP_WIDTH;
+            if(needDraw(x * GRID_SIZE, y * GRID_SIZE)){
+                painter->drawRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            }
+        }
+    }
+    painter->restore();
+}
 
-//    // draw number
-//    painter->setPen(QColor(255, 0, 0));
-//    painter->setBrush(QColor(255, 182, 193));
-//    painter->save();
-//    for(int i = 0; i < MAP_WIDTH; ++i)
-//    {
-//        if(i % 50 == 0)
-//        {
-//            if(needDraw(i * GRID_SIZE, GRID_SIZE))
-//            {
-//                painter->drawText(i * GRID_SIZE, GRID_SIZE, QString::number(i));
-//            }
-//        }
-//    }
-//    for(int i = 0; i < MAP_HEIGHT; ++i)
-//    {
-//        if(i % 50 == 0)
-//        {
-//            if(needDraw(0, i * GRID_SIZE + GRID_SIZE))
-//            {
-//                painter->drawText(0,i * GRID_SIZE + GRID_SIZE,  QString::number(i));
-//            }
-//        }
-//    }
-//    painter->restore();
-
-    renderParkingUseInfo(painter);
-    renderParkingIndex(painter);
-    renderPath(painter);
-//    renderRoadIndex(painter);
+void ParkMapWindow::renderNumber(QPainter* painter)
+{
+    // draw number
+    painter->setPen(QColor(255, 0, 0));
+    painter->setBrush(QColor(255, 182, 193));
+    painter->save();
+    for(int i = 0; i < MAP_WIDTH; ++i){
+        if(i % 50 == 0){
+            if(needDraw(i * GRID_SIZE, GRID_SIZE)){
+                painter->drawText(i * GRID_SIZE, GRID_SIZE, QString::number(i));
+            }
+        }
+    }
+    for(int i = 0; i < MAP_HEIGHT; ++i){
+        if(i % 50 == 0){
+            if(needDraw(0, i * GRID_SIZE + GRID_SIZE)){
+                painter->drawText(0,i * GRID_SIZE + GRID_SIZE,  QString::number(i));
+            }
+        }
+    }
+    painter->restore();
 }
 
 void ParkMapWindow::renderParkingUseInfo(QPainter* painter)
@@ -180,8 +188,7 @@ void ParkMapWindow::renderParkingUseInfo(QPainter* painter)
     painter->setBrush(QColor(178,34,34));
     painter->save();
     const QVector<QSharedPointer<ParkingPositionInfo>>& all = ParkingPositions::GetIns()->GetAllPositions();
-    foreach (const QSharedPointer<ParkingPositionInfo>& iter, all)
-    {
+    foreach (const QSharedPointer<ParkingPositionInfo>& iter, all){
         int index = iter.get()->GetGridIndex();
         int x = index % MAP_WIDTH;
         int y = index / MAP_WIDTH;
@@ -236,8 +243,7 @@ void ParkMapWindow::renderRoadIndex(QPainter* painter)
     painter->save();
 
     const QVector<QSharedPointer<ParkingRoadInfo>>& all = ParkingRoads::GetIns()->GetRoads();
-    foreach (const QSharedPointer<ParkingRoadInfo>& iter, all)
-    {
+    foreach (const QSharedPointer<ParkingRoadInfo>& iter, all){
         int index = iter.get()->GetStartGrid();
         int x = index % MAP_WIDTH;
         int y = index / MAP_WIDTH;
@@ -249,8 +255,7 @@ void ParkMapWindow::renderRoadIndex(QPainter* painter)
 //        index = iter.get()->GetLastGrid();
 //        x = index % MAP_WIDTH;
 //        y = index / MAP_WIDTH;
-//        if(needDraw(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE))
-//        {
+//        if(needDraw(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE)){
 //            painter->drawText(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE, QString::number(iter.get()->GetIndex()));
 //        }
     }
@@ -259,17 +264,14 @@ void ParkMapWindow::renderRoadIndex(QPainter* painter)
 //    // link roads
 //    painter->setPen(QColor(0, 255, 255));
 //    painter->save();
-//    foreach (const QSharedPointer<ParkingRoadInfo>& iter, all)
-//    {
+//    foreach (const QSharedPointer<ParkingRoadInfo>& iter, all){
 //        int index = iter.get()->GetStartGrid();
 //        int x = index % MAP_WIDTH;
 //        int y = index / MAP_WIDTH;
 
-//        if(needDraw(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE))
-//        {
+//        if(needDraw(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE)){
 //            int count = 1;
-//            foreach(const int& link, iter.get()->GetLinkRoads())
-//            {
+//            foreach(const int& link, iter.get()->GetLinkRoads()){
 //                ++count;
 //                painter->drawText(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE * count, QString::number(link));
 //            }
@@ -280,17 +282,14 @@ void ParkMapWindow::renderRoadIndex(QPainter* painter)
 //    // parking positions
 //    painter->setPen(QColor(125, 200, 255));
 //    painter->save();
-//    foreach (const QSharedPointer<ParkingRoadInfo>& iter, all)
-//    {
+//    foreach (const QSharedPointer<ParkingRoadInfo>& iter, all){
 //        int index = iter.get()->GetStartGrid();
 //        int x = index % MAP_WIDTH;
 //        int y = index / MAP_WIDTH;
 
-//        if(needDraw(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE))
-//        {
+//        if(needDraw(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE)){
 //            int count = 1;
-//            foreach(const int& link, iter.get()->GetParkingPositions())
-//            {
+//            foreach(const int& link, iter.get()->GetParkingPositions()){
 //                ++count;
 //                painter->drawText(x * GRID_SIZE, y * GRID_SIZE + GRID_SIZE * count, QString::number(link));
 //            }
@@ -306,8 +305,7 @@ void ParkMapWindow::renderPath(QPainter* painter)
     painter->setPen(Qt::NoPen);
     painter->setBrush(QColor(34,139,34));
     painter->save();
-    foreach (int iter, path)
-    {
+    foreach (const int& iter, path){
         int x = iter % MAP_WIDTH;
         int y = iter / MAP_WIDTH;
 

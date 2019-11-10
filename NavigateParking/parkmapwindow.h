@@ -23,6 +23,11 @@ private:
     void renderParkingUseInfo(QPainter* painter);
     void renderPath(QPainter* painter);
     void renderRoadIndex(QPainter* painter);
+    void renderNumber(QPainter* painter);
+    void renderParkPlace(QPainter* painter);
+    void renderRoad(QPainter* painter);
+    void renderWall(QPainter* painter);
+    void renderGrid(QPainter* painter);
     bool needDraw(int x, int y);
     void mousePressEvent(QMouseEvent *) override;
     void mouseMoveEvent(QMouseEvent *) override;

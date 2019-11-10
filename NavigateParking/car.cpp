@@ -130,8 +130,7 @@ void Car::findEmptyParkingPosition(QVector<int>& emptyParkingPosition)
     QVector<int> closeList;
     nextList.push_back(roadIndex);
     int limit = 0;
-    while (emptyParkingPosition.empty())
-    {
+    while (emptyParkingPosition.empty()){
         ++limit;
         if(limit > 20){
             m_TargetPos = m_StartPos;
@@ -139,14 +138,12 @@ void Car::findEmptyParkingPosition(QVector<int>& emptyParkingPosition)
         }
         openList = nextList;
         nextList.clear();
-        foreach (const int& checkRoadIndex, openList)
-        {
+        foreach (const int& checkRoadIndex, openList){
             const ParkingRoadInfo* road = ParkingRoads::GetIns()->GetRoadByIndex(checkRoadIndex);
             // each road only choose the nearest one
             int dis = MAP_WIDTH * MAP_HEIGHT;
             int choosePos = 0;
-            foreach(const int& parkingPosition, road->GetParkingPositions())
-            {
+            foreach(const int& parkingPosition, road->GetParkingPositions()){
                 const ParkingPositionInfo* parkingPositionInfo = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(parkingPosition);
                 if(!parkingPositionInfo->IsUsed()){
                     int posIndex = parkingPositionInfo->GetGridIndex();
@@ -179,8 +176,7 @@ void Car::findPath()
     // find the nearest parking position
     QVector<int> path;
     int lastLength = MAP_WIDTH * MAP_HEIGHT;
-    foreach(const int& target, emptyParkingPosition)
-    {
+    foreach(const int& target, emptyParkingPosition){
         path.clear();
         const ParkingPositionInfo* targetParkingPosition = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(target);
         int endX = targetParkingPosition->GetGridIndex() % MAP_WIDTH;
@@ -188,10 +184,8 @@ void Car::findPath()
 
         path.push_back(m_StartPos);
         // move the target position to road
-        for(int i = 0; i < 10; ++i)
-        {
-            if(targetParkingPosition->GetDirection() == ParkingDirection::PD_Horizontal)
-            {
+        for(int i = 0; i < 10; ++i){
+            if(targetParkingPosition->GetDirection() == ParkingDirection::PD_Horizontal){
                 if(isRoad(endX - i, endY)){
                     endX -= i;
                     break;

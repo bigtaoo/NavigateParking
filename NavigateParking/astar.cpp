@@ -94,8 +94,7 @@ void AStar::FindPath(int start, int end, QVector<int> &path)
                 findNodeOnList(closedSet, newPosition)) {
                 continue;
             }
-
-            int totalCost = current->G + ((i < 4) ? 10 : 14);
+            int totalCost = current->G + 10;
 
             Node *successor = findNodeOnList(openSet, newPosition);
             if (successor == nullptr) {
@@ -103,8 +102,7 @@ void AStar::FindPath(int start, int end, QVector<int> &path)
                 successor->G = totalCost;
                 successor->H = getDistance(successor->position, end);
                 openSet.insert(successor);
-            }
-            else if (totalCost < successor->G) {
+            }else if (totalCost < successor->G) {
                 successor->parent = current;
                 successor->G = totalCost;
             }

@@ -8,8 +8,7 @@ QSharedPointer<ParkingRoads> ParkingRoads::m_Ins;
 
 ParkingRoads* ParkingRoads::GetIns()
 {
-    if (nullptr == m_Ins.get())
-    {
+    if (nullptr == m_Ins.get()){
         m_Ins.reset(new ParkingRoads());
     }
     return m_Ins.get();
@@ -19,18 +18,15 @@ ParkingRoadInfo::ParkingRoadInfo(int index, ParkingDirection direction) :
     m_Index(index)
   , m_Direction(direction)
 {
-
 }
 
 ParkingRoadInfo::~ParkingRoadInfo()
 {
-
 }
 
 int ParkingRoadInfo::GetStartGrid() const
 {
-    if(m_Grids.empty())
-    {
+    if(m_Grids.empty()){
         return 0;
     }
     return m_Grids.first();
@@ -38,8 +34,7 @@ int ParkingRoadInfo::GetStartGrid() const
 
 int ParkingRoadInfo::GetLastGrid() const
 {
-    if(m_Grids.empty())
-    {
+    if(m_Grids.empty()){
         return 0;
     }
     return m_Grids.last();
@@ -48,13 +43,11 @@ int ParkingRoadInfo::GetLastGrid() const
 void ParkingRoadInfo::AddGrid(int grid)
 {
     m_Grids.push_back(grid);
-
     ParkMapGridInfo::GetIns()->SetRoadIndex(grid, m_Index);
 }
 
 ParkingRoads::ParkingRoads() : m_IndexGenerater(0)
 {
-
 }
 
 ParkingRoads::~ParkingRoads()
@@ -66,7 +59,6 @@ void ParkingRoads::Initialize()
 {
     buildVerticalRoad();
     buildHorizontalRoad();
-    //buildRoadIndex(6, 1, 6);
 
     buildLiknRoads();
     buildParkingPositions();
@@ -74,10 +66,8 @@ void ParkingRoads::Initialize()
 
 const ParkingRoadInfo* ParkingRoads::GetRoadByIndex(int index) const
 {
-    foreach(const QSharedPointer<ParkingRoadInfo>& iter, m_kAllRoads)
-    {
-        if(iter.get()->GetIndex() == index)
-        {
+    foreach(const QSharedPointer<ParkingRoadInfo>& iter, m_kAllRoads) {
+        if(iter.get()->GetIndex() == index){
             return iter.get();
         }
     }
@@ -96,82 +86,11 @@ bool ParkingRoads::isRoad(int x, int y)
 
 bool ParkingRoads::isParkingPosition(int x, int y)
 {
-    if(ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * y + x) == MapGrid::MG_ParkPosition)
-    {
+    if(ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * y + x) == MapGrid::MG_ParkPosition){
         return true;
     }
     return false;
 }
-
-//void ParkingRoads::buildRoadIndex(int x, int y, int width)
-//{
-//    if(y > MAP_HEIGHT || x > MAP_WIDTH)
-//    {
-//        return;
-//    }
-//    ParkingRoadInfo* road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Horizontal);
-//    m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
-
-//    bool IsHorizontal = true;
-//    if(ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * y + x - 1) == MapGrid::MG_ParkPosition)
-//    {
-//        IsHorizontal = false;
-//    }
-//    if(IsHorizontal)
-//    {
-//        //MapGrid checkGrid = ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * (y + width + 1) + x);
-//        bool checkGrid = isRoad(x, y + width + 1);
-//        int checkX = x;
-//        bool tempGrid = isRoad(x + 1, y + 1 + width);
-//        while(x < MAP_WIDTH && tempGrid == checkGrid)
-//        {
-//            for(int i = 0; i < width; ++i)
-//            {
-//                road->AddGrid((y + i) * MAP_WIDTH + x);
-//            }
-//            ++x;
-//            tempGrid = isRoad(x + width + 1, y + 1);
-//        }
-//        if(!checkGrid)
-//        {
-//            // right direction
-//            buildRoadIndex(x + 1, y, width);
-//        }
-//        if(isRoad(x, y + width + 1))
-//        {
-//            // bottom direction
-//            buildRoadIndex(x, y + width + 1, x - checkX + 1);
-//        }
-//    }
-//    else
-//    {
-//        //MapGrid checkGrid = ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * y + x + width + 1);
-//        bool checkGrid = isRoad(x + width + 1, y);
-//        int checkY = y;
-//        //MapGrid tempGrid = ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * (y + 1) + x + width + 1);
-//        bool tempGrid = isRoad(x + width + 1, y + 1);
-//        while(y < MAP_HEIGHT && tempGrid == checkGrid)
-//        {
-//            for(int i = 0; i < width; ++i)
-//            {
-//                road->AddGrid(y * MAP_WIDTH + x + i);
-//            }
-//            ++y;
-//            //tempGrid = ParkMapGridInfo::GetIns()->GetGrid(MAP_WIDTH * (y + 1) + x + width + 1);
-//            tempGrid = isRoad(x + width + 1, y + 1);
-//        }
-//        if(!checkGrid)
-//        {
-//            // bottom direction
-//            buildRoadIndex(x, y + 1, width);
-//        }
-//        if(isRoad(x, y + 1))
-//        {
-//            // right direction
-//            buildRoadIndex(x + width + 1, checkY, y - checkY + 1);
-//        }
-//    }
-//}
 
 void ParkingRoads::buildVerticalRoad()
 {
@@ -179,18 +98,13 @@ void ParkingRoads::buildVerticalRoad()
     ParkingRoadInfo* road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Vertical);
     m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
     // left
-    for(int k = 1; k < MAP_HEIGHT - 1; ++k)
-    {
-        if(isRoad(13, k) == findRoad)
-        {
-            for(int i = 6; i < 12; ++i)
-            {
+    for(int k = 1; k < MAP_HEIGHT - 1; ++k){
+        if(isRoad(13, k) == findRoad){
+            for(int i = 6; i < 12; ++i){
                 int index = k * MAP_WIDTH + i;
                 road->AddGrid(index);
             }
-        }
-        else
-        {
+        }else{
             findRoad = !findRoad;
             road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Vertical);
             m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
@@ -198,38 +112,28 @@ void ParkingRoads::buildVerticalRoad()
         }
     }
     // middle
-    for(int m = 13; m < MAP_WIDTH - 13; ++m)
-    {
+    for(int m = 13; m < MAP_WIDTH - 13; ++m){
         // check road width
         int width = 1;
-        if(isRoad(m, 13))
-        {
-            while (isRoad(m + width, 13))
-            {
+        if(isRoad(m, 13)){
+            while (isRoad(m + width, 13)){
                 ++width;
             }
 
-            if(width > 0)
-            {
+            if(width > 0){
                 road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Vertical);
                 m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
 
                 bool newRoad = false;
-                for(int k = 8; k < MAP_HEIGHT - 11; ++k)
-                {
-                    if(!isRoad(m - 1, k))
-                    {
+                for(int k = 8; k < MAP_HEIGHT - 11; ++k){
+                    if(!isRoad(m - 1, k)){
                         newRoad = true;
-                        for(int i = 0; i < width; ++i)
-                        {
+                        for(int i = 0; i < width; ++i){
                             int index = k * MAP_WIDTH + m + i;
                             road->AddGrid(index);
                         }
-                    }
-                    else
-                    {
-                        if(newRoad)
-                        {
+                    }else{
+                        if(newRoad){
                             newRoad = false;
                             road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Vertical);
                             m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
@@ -243,18 +147,13 @@ void ParkingRoads::buildVerticalRoad()
 
     // right
     findRoad = false;
-    for(int k = 1; k < MAP_HEIGHT - 1; ++k)
-    {
-        if(isRoad(MAP_WIDTH - 19, k) == findRoad)
-        {
-            for(int i = 6; i < 12; ++i)
-            {
+    for(int k = 1; k < MAP_HEIGHT - 1; ++k){
+        if(isRoad(MAP_WIDTH - 19, k) == findRoad){
+            for(int i = 6; i < 12; ++i){
                 int index = k * MAP_WIDTH + i + MAP_WIDTH - 17;
                 road->AddGrid(index);
             }
-        }
-        else
-        {
+        }else{
             findRoad = !findRoad;
             road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Vertical);
             m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
@@ -270,18 +169,13 @@ void ParkingRoads::buildHorizontalRoad()
     bool findRoad = false;
 
     // top
-    for(int k = 12; k < MAP_WIDTH - 12; ++k)
-    {
-        if(isRoad(k, 13) == findRoad)
-        {
-            for(int i = 6; i < 12; ++i)
-            {
+    for(int k = 12; k < MAP_WIDTH - 12; ++k){
+        if(isRoad(k, 13) == findRoad){
+            for(int i = 6; i < 12; ++i){
                 int index = i * MAP_WIDTH + k;
                 road->AddGrid(index);
             }
-        }
-        else
-        {
+        }else{
             findRoad = !findRoad;
             road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Horizontal);
             m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
@@ -289,30 +183,22 @@ void ParkingRoads::buildHorizontalRoad()
         }
     }
     // middle
-    for(int i = 20; i < MAP_HEIGHT - 20; ++i)
-    {
-        if(isRoad(13, i))
-        {
+    for(int i = 20; i < MAP_HEIGHT - 20; ++i){
+        if(isRoad(13, i)){
             // road width
             int width = 1;
-            while (isRoad(13, i + width))
-            {
+            while (isRoad(13, i + width)){
                 ++width;
             }
 
             findRoad = true;
-            for(int j = 12; j < MAP_WIDTH - 13; ++j)
-            {
-                if(isRoad(j, i - 1) == findRoad)
-                {
-                    for(int m = 0; m < width; ++m)
-                    {
+            for(int j = 12; j < MAP_WIDTH - 13; ++j){
+                if(isRoad(j, i - 1) == findRoad){
+                    for(int m = 0; m < width; ++m){
                         int index = (i + m) * MAP_WIDTH + j;
                         road->AddGrid(index);
                     }
-                }
-                else
-                {
+                }else{
                     findRoad = !findRoad;
                     road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Horizontal);
                     m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
@@ -324,18 +210,13 @@ void ParkingRoads::buildHorizontalRoad()
     }
     // bottom
     findRoad = true;
-    for(int k = 12; k < MAP_WIDTH - 12; ++k)
-    {
-        if(isRoad(k, MAP_HEIGHT - 13) == findRoad)
-        {
-            for(int i = 10; i > 4; --i)
-            {
+    for(int k = 12; k < MAP_WIDTH - 12; ++k){
+        if(isRoad(k, MAP_HEIGHT - 13) == findRoad){
+            for(int i = 10; i > 4; --i){
                 int index = (MAP_HEIGHT - i) * MAP_WIDTH + k;
                 road->AddGrid(index);
             }
-        }
-        else
-        {
+        }else{
             findRoad = !findRoad;
             road = new ParkingRoadInfo(generateIndex(), ParkingDirection::PD_Horizontal);
             m_kAllRoads.push_back(QSharedPointer<ParkingRoadInfo>(road));
@@ -346,28 +227,22 @@ void ParkingRoads::buildHorizontalRoad()
 
 void ParkingRoads::buildLiknRoads()
 {
-    foreach (const QSharedPointer<ParkingRoadInfo>& road, m_kAllRoads)
-    {
+    foreach (const QSharedPointer<ParkingRoadInfo>& road, m_kAllRoads){
         // find the road around this road
         const QVector<int>& grids = road.get()->GetGrids();
-        foreach(const int& grid, grids)
-        {
+        foreach(const int& grid, grids){
             int x = grid % MAP_WIDTH;
             int y = grid / MAP_WIDTH;
-            if(isRoad(x - 1, y))
-            {
+            if(isRoad(x - 1, y)){
                 addUniqueLinkRoad(road, x - 1, y);
             }
-            if(isRoad(x + 1, y))
-            {
+            if(isRoad(x + 1, y)){
                 addUniqueLinkRoad(road, x + 1, y);
             }
-            if(isRoad(x, y - 1))
-            {
+            if(isRoad(x, y - 1)){
                 addUniqueLinkRoad(road, x, y - 1);
             }
-            if(isRoad(x, y + 1))
-            {
+            if(isRoad(x, y + 1)){
                 addUniqueLinkRoad(road, x, y + 1);
             }
         }
@@ -377,40 +252,32 @@ void ParkingRoads::buildLiknRoads()
 void ParkingRoads::addUniqueLinkRoad(const QSharedPointer<ParkingRoadInfo>& road, int x, int y)
 {
     int roadIndex = ParkMapGridInfo::GetIns()->GetRoadIndex(y * MAP_WIDTH + x);
-    if(roadIndex == 0 || roadIndex == road.get()->GetIndex())
-    {
+    if(roadIndex == 0 || roadIndex == road.get()->GetIndex()){
         return;
     }
-    if(!road.get()->GetLinkRoads().contains(roadIndex))
-    {
+    if(!road.get()->GetLinkRoads().contains(roadIndex)){
         road.get()->AddLinkRoad(roadIndex);
     }
 }
 
 void ParkingRoads::buildParkingPositions()
 {
-    foreach (const QSharedPointer<ParkingRoadInfo>& road, m_kAllRoads)
-    {
+    foreach (const QSharedPointer<ParkingRoadInfo>& road, m_kAllRoads){
         // find the road around this road
         const QVector<int>& grids = road.get()->GetGrids();
-        foreach(const int& grid, grids)
-        {
+        foreach(const int& grid, grids){
             int x = grid % MAP_WIDTH;
             int y = grid / MAP_WIDTH;
-            if(ParkMapGridInfo::GetIns()->GetGrid(x - 1 + y * MAP_WIDTH) == MapGrid::MG_ParkPosition)
-            {
+            if(ParkMapGridInfo::GetIns()->GetGrid(x - 1 + y * MAP_WIDTH) == MapGrid::MG_ParkPosition){
                 addUniqueParkingPosition(road, x - 1, y);
             }
-            if(ParkMapGridInfo::GetIns()->GetGrid(x + 1 + y * MAP_WIDTH) == MapGrid::MG_ParkPosition)
-            {
+            if(ParkMapGridInfo::GetIns()->GetGrid(x + 1 + y * MAP_WIDTH) == MapGrid::MG_ParkPosition){
                 addUniqueParkingPosition(road, x + 1, y);
             }
-            if(ParkMapGridInfo::GetIns()->GetGrid(x + (y - 1) * MAP_WIDTH) == MapGrid::MG_ParkPosition)
-            {
+            if(ParkMapGridInfo::GetIns()->GetGrid(x + (y - 1) * MAP_WIDTH) == MapGrid::MG_ParkPosition){
                 addUniqueParkingPosition(road, x, y - 1);
             }
-            if(ParkMapGridInfo::GetIns()->GetGrid(x + (y + 1) * MAP_WIDTH) == MapGrid::MG_ParkPosition)
-            {
+            if(ParkMapGridInfo::GetIns()->GetGrid(x + (y + 1) * MAP_WIDTH) == MapGrid::MG_ParkPosition){
                 addUniqueParkingPosition(road, x, y + 1);
             }
         }
@@ -419,17 +286,14 @@ void ParkingRoads::buildParkingPositions()
 void ParkingRoads::addUniqueParkingPosition(const QSharedPointer<ParkingRoadInfo>& road, int x, int y)
 {
     int parkingPositionIndex = ParkMapGridInfo::GetIns()->GetParkingPositionIndex(x + y * MAP_WIDTH);
-    if(parkingPositionIndex == 0)
-    {
+    if(parkingPositionIndex == 0){
         return;
     }
     const ParkingPositionInfo* info = ParkingPositions::GetIns()->GetParkingPositionInfoByIndex(parkingPositionIndex);
-    if(info == nullptr || info->GetDirection() == road.get()->GetDirection())
-    {
+    if(info == nullptr || info->GetDirection() == road.get()->GetDirection()){
         return;
     }
-    if(!road.get()->GetParkingPositions().contains(parkingPositionIndex))
-    {
+    if(!road.get()->GetParkingPositions().contains(parkingPositionIndex)){
         road.get()->AddParkingPosition(parkingPositionIndex);
     }
 }
@@ -437,8 +301,7 @@ void ParkingRoads::addUniqueParkingPosition(const QSharedPointer<ParkingRoadInfo
 void ParkingRoads::Write(QJsonObject &json) const
 {
     QJsonArray allRoadsArray;
-    foreach (const QSharedPointer<ParkingRoadInfo>& iter, m_kAllRoads)
-    {
+    foreach (const QSharedPointer<ParkingRoadInfo>& iter, m_kAllRoads){
         QJsonObject roadObject;
         iter.get()->Write(roadObject);
         allRoadsArray.append(roadObject);
@@ -448,13 +311,11 @@ void ParkingRoads::Write(QJsonObject &json) const
 
 void ParkingRoads::Read(const QJsonObject &json)
 {
-    if (json.contains("roads") && json["roads"].isArray())
-    {
+    if (json.contains("roads") && json["roads"].isArray()){
         QJsonArray roadsArray = json["roads"].toArray();
         m_kAllRoads.clear();
         m_kAllRoads.reserve(roadsArray.size());
-        for (int i = 0; i < roadsArray.size(); ++i)
-        {
+        for (int i = 0; i < roadsArray.size(); ++i){
             QJsonObject roadObject = roadsArray[i].toObject();
             ParkingRoadInfo* road = new ParkingRoadInfo(0,ParkingDirection::PD_Vertical);
             road->Read(roadObject);
@@ -468,20 +329,17 @@ void ParkingRoadInfo::Write(QJsonObject &json) const
     json["Index"] =  m_Index;
     json["Direction"] =  m_Direction;
     QJsonArray gridsArray;
-    foreach(const int& iter, m_Grids)
-    {
+    foreach(const int& iter, m_Grids){
         gridsArray.append(iter);
     }
     json["grids"] = gridsArray;
     QJsonArray parkingPositionsArray;
-    foreach(const int& iter, m_ParkingPositions)
-    {
+    foreach(const int& iter, m_ParkingPositions){
         parkingPositionsArray.append(iter);
     }
     json["parkingPositions"] = parkingPositionsArray;
     QJsonArray linkRoadsArray;
-    foreach(const int& iter, m_LinkRoads)
-    {
+    foreach(const int& iter, m_LinkRoads){
         linkRoadsArray.append(iter);
     }
     json["linkRoads"] = linkRoadsArray;
@@ -489,41 +347,33 @@ void ParkingRoadInfo::Write(QJsonObject &json) const
 
 void ParkingRoadInfo::Read(const QJsonObject &json)
 {
-    if (json.contains("Index"))
-    {
+    if (json.contains("Index")){
         m_Index = json["Index"].toInt();
     }
-    if (json.contains("Direction"))
-    {
+    if (json.contains("Direction")){
         m_Direction = static_cast<ParkingDirection>(json["Direction"].toInt());
     }
-    if (json.contains("grids") && json["grids"].isArray())
-    {
+    if (json.contains("grids") && json["grids"].isArray()){
         QJsonArray gridsArray = json["grids"].toArray();
         m_Grids.clear();
         m_Grids.resize(gridsArray.size());
-        for(int i = 0; i < gridsArray.size(); ++i)
-        {
+        for(int i = 0; i < gridsArray.size(); ++i){
             m_Grids[i] = gridsArray[i].toInt();
         }
     }
-    if (json.contains("parkingPositions") && json["parkingPositions"].isArray())
-    {
+    if (json.contains("parkingPositions") && json["parkingPositions"].isArray()){
         QJsonArray parkingPositionsArray = json["parkingPositions"].toArray();
         m_ParkingPositions.clear();
         m_ParkingPositions.resize(parkingPositionsArray.size());
-        for(int i = 0; i < parkingPositionsArray.size(); ++i)
-        {
+        for(int i = 0; i < parkingPositionsArray.size(); ++i){
             m_ParkingPositions[i] = parkingPositionsArray[i].toInt();
         }
     }
-    if (json.contains("linkRoads") && json["linkRoads"].isArray())
-    {
+    if (json.contains("linkRoads") && json["linkRoads"].isArray()){
         QJsonArray linkRoadsArray = json["linkRoads"].toArray();
         m_LinkRoads.clear();
         m_LinkRoads.resize(linkRoadsArray.size());
-        for(int i = 0; i < linkRoadsArray.size(); ++i)
-        {
+        for(int i = 0; i < linkRoadsArray.size(); ++i){
             m_LinkRoads[i] = linkRoadsArray[i].toInt();
         }
     }
